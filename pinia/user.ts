@@ -53,6 +53,7 @@ import type {
 import { stringToHex } from "@polkadot/util";
 
 import { ContractPromise } from "@polkadot/api-contract";
+import Keyring from "@polkadot/keyring";
 
 // The address is the actual on-chain address as ss58 or AccountId object.
 
@@ -253,6 +254,16 @@ export const useUserStore = defineStore(STORE_KEY, {
       const contract = await this.getContract();
 
       try {
+        const keyring = new Keyring({ type: "sr25519" });
+        const aliceKey = keyring.createFromUri("//Alice");
+        const alice = aliceKey.address;
+        const { nonce, data: balance } = await api.query.system.account(alice);
+        const aliceBalance = balance.free.toString();
+
+        const txHash = await api.tx.balances
+          .transferKeepAlive(this.accountId!, 1000000000)
+          .signAndSend(alice, {});
+        console.log({ txHash });
         const injector = await web3FromAddress(this.accountId!);
         await contract.tx
           .createUser(
