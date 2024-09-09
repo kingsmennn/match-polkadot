@@ -139,9 +139,3 @@ Match is licensed under the MIT License.
 With Match, experience a seamless, secure, and efficient marketplace on the Polkadot network, where buyers and sellers connect with confidence.
 
 # match-Polkadot
-# match-polkadot
-# match-polkadot
-# match-polkadot
-# match-polkadot
-# match-polkadot
-# match-polkadot
