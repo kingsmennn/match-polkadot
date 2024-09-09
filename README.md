@@ -15,7 +15,7 @@ Our team consists of **Favour**, a Frontend Developer, and **David (DavyKing)**,
 Our solution is evaluated based on the following criteria:
 
 1. **Innovation:** Match introduces a novel way of connecting buyers and sellers through a decentralized platform.
-2. **Technical Complexity:** The use of smart contracts on Polkadot and integration with Anchor demonstrates a high level of technical expertise.
+2. **Technical Complexity:** The use of smart contracts on Polkadot and integration with Ink! demonstrates a high level of technical expertise.
 3. **Usability:** The user interface built with Nuxt ensures a smooth user experience.
 4. **Impact:** By decentralizing the marketplace, Match reduces the risk of fraud and increases transparency.
 5. **Scalability:** Built on Polkadot, Match can handle a high volume of transactions with minimal latency.
@@ -35,7 +35,7 @@ Our solution is evaluated based on the following criteria:
 
 1. **Smart Contracts:** Match utilizes smart contracts deployed on the Polkadot network. These contracts handle the creation, management, and retrieval of offers, requests, and user stores.
 
-2. **Connection via Anchor Provider:** The dApp connects to users' Polkadot accounts using Anchor Framework, enabling secure transactions and contract interactions.
+2. **Connection via Ink! Provider:** The dApp connects to users' Polkadot accounts using Ink! Framework, enabling secure transactions and contract interactions.
 
 3. **Contract Interactions:**
    - **CreateOffer:** Sellers can create an offer with specified parameters.
