@@ -76,8 +76,8 @@ Certainly! Here's an outline for "Match" based on the categories you provided:
 1. **Clone the Repository:**
 
    ```bash
-   git https://github.com/Kingsmen-hackers/match-Polkadot
-   cd match-Polkadot
+   git https://github.com/Kingsmen-hackers/match-polkadot
+   cd match-polkadot
    ```
 
 2. **Install Dependencies:**
