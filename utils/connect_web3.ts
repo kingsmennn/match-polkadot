@@ -74,11 +74,7 @@ export const connectExtension = async () => {
     return;
   }
 
-  let accounts: InjectedAccountWithMeta[] = [];
-  activeExtension
-    ? (accounts = await web3Accounts())
-    : console.log("No Accounts Found");
+  let accounts: InjectedAccountWithMeta[] = await web3Accounts();
 
-  // sign message
-  return await signMessage(accounts);
+  return accounts;
 };

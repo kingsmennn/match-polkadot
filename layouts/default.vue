@@ -139,7 +139,7 @@ const unwatch = watch(
   async (val) => {
     if (!!val) {
       userStore.blockchainError.userNotFound = false;
-      await userStore.connectToSolana();
+      await userStore.connectToPolkadot();
       unwatch();
     }
   },
@@ -156,7 +156,7 @@ const connecting = ref(false);
 const handleWalletConnect = async () => {
   connecting.value = true;
   try {
-    await userStore.connectToSolana();
+    await userStore.connectToPolkadot();
     // once connected the subscription function will update the user store
   } catch (e) {
     // haldle errors

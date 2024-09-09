@@ -29,6 +29,7 @@ import {
 } from "@solana/web3.js";
 import { AnchorProvider, BN, Idl, Program } from "@project-serum/anchor";
 import { marketAbi } from "@/blockchain/abi";
+import { connectExtension } from "@/utils/connect_web3";
 
 import { toast } from "vue-sonner";
 import {
@@ -104,28 +105,24 @@ export const useUserStore = defineStore(STORE_KEY, {
   },
   actions: {
     async setUpPolkadotConnectEvents() {
-      const { publicKey, wallet } = useWallet();
-
-      const walletAdapter = wallet.value!.adapter;
-
-      walletAdapter.on("connect", (newPublicKey) => {
-        this.blockchainError.userNotFound = false;
-        this.accountId = newPublicKey.toBase58();
-        this.connectToSolana();
-      });
-
-      walletAdapter.on("disconnect", () => {
-        this.disconnect();
-      });
+      // const { publicKey, wallet } = useWallet();
+      // const walletAdapter = wallet.value!.adapter;
+      // walletAdapter.on("connect", (newPublicKey) => {
+      //   this.blockchainError.userNotFound = false;
+      //   this.accountId = newPublicKey.toBase58();
+      //   this.connectToPolkadot();
+      // });
+      // walletAdapter.on("disconnect", () => {
+      //   this.disconnect();
+      // });
     },
-    async connectToSolana() {
-      const { publicKey, wallet } = useWallet();
-
+    async connectToPolkadot() {
       try {
+        const accounts = await connectExtension();
         // Set the account ID (address)
-        this.accountId = publicKey!.value!.toString();
+        this.accountId = accounts![0].address;
 
-        const blockchainUser = await this.fetchUser(publicKey!.value!);
+        const blockchainUser = await this.fetchUser(this.accountId);
 
         this.storeUserDetails(blockchainUser);
 
@@ -152,32 +149,32 @@ export const useUserStore = defineStore(STORE_KEY, {
       this.blockchainError.userNotFound = false;
     },
 
-    async fetchUser(account_id: PublicKey): Promise<any> {
+    async fetchUser(account_id: String): Promise<any> {
       const contract = await this.getContract();
-      const [profilePda, _] = findProgramAddressSync(
-        [utf8.encode(USER_TAG), account_id.toBuffer()],
-        programID
-      );
+      // const [profilePda, _] = findProgramAddressSync(
+      //   [utf8.encode(USER_TAG), account_id.toBuffer()],
+      //   programID
+      // );
 
       try {
-        const userData = await contract.account.user.fetch(profilePda);
+        // const userData = await contract.account.user.fetch(profilePda);
 
-        const accountType = Object.keys(userData.accountType)[0];
+        // const accountType = Object.keys(userData.accountType)[0];
 
-        const results = [
-          Number(userData.id),
-          userData.username,
-          userData.phone,
-          [
-            Number(userData.location.longitude),
-            Number(userData.location.latitude),
-          ],
-          Number(userData.createdAt),
-          Number(userData.updatedAt),
-          Number(accountType === AccountType.BUYER ? 0 : 1),
-        ];
+        // const results = [
+        //   Number(userData.id),
+        //   userData.username,
+        //   userData.phone,
+        //   [
+        //     Number(userData.location.longitude),
+        //     Number(userData.location.latitude),
+        //   ],
+        //   Number(userData.createdAt),
+        //   Number(userData.updatedAt),
+        //   Number(accountType === AccountType.BUYER ? 0 : 1),
+        // ];
 
-        return results;
+        // return results;
       } catch (error) {
         return [0, "", "", [0, 0], 0, 0, 0];
       }
