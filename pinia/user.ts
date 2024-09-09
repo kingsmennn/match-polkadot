@@ -30,23 +30,26 @@ import {
 import { AnchorProvider, BN, Idl, Program } from "@project-serum/anchor";
 import { marketAbi } from "@/blockchain/abi";
 
+import { toast } from "vue-sonner";
 import {
-  SubstrateDeployment,
-  UseInkathonProvider,
-  contractQuery,
-  contractTx,
-  decodeOutput,
-  rococo,
-  useBalance,
-  useInkathon,
-  useRegisteredContract,
-} from "@scio-labs/use-inkathon";
+  web3Enable,
+  web3Accounts,
+  web3FromAddress,
+  web3FromSource,
+} from "@polkadot/extension-dapp";
 import {
-  QueryClient,
-  QueryClientProvider,
-  useMutation,
-  useQuery,
-} from "@tanstack/react-query";
+  cryptoWaitReady,
+  decodeAddress,
+  signatureVerify,
+} from "@polkadot/util-crypto";
+import { u8aToHex } from "@polkadot/util";
+import { ApiPromise, WsProvider } from "@polkadot/api";
+
+import type {
+  InjectedAccountWithMeta,
+  InjectedExtension,
+} from "@polkadot/extension-inject/types";
+import { stringToHex } from "@polkadot/util";
 
 type UserStore = {
   accountId: string | null;
@@ -73,7 +76,7 @@ const provider = computed(() => {
 });
 const program = computed(() => {
   if (!provider.value) return;
-  return new Program(marketAbi as Idl, programID, provider.value);
+  return new Program(marketAbi as any, programID, provider.value);
 });
 
 export const useUserStore = defineStore(STORE_KEY, {
@@ -100,7 +103,7 @@ export const useUserStore = defineStore(STORE_KEY, {
     accountType: (state) => state.userDetails?.[6],
   },
   actions: {
-    async setUpSolanaConnectEvents() {
+    async setUpPolkadotConnectEvents() {
       const { publicKey, wallet } = useWallet();
 
       const walletAdapter = wallet.value!.adapter;
@@ -423,7 +426,7 @@ export const useUserStore = defineStore(STORE_KEY, {
     ],
     async afterRestore(context) {
       if (context.store.accountId) {
-        await context.store.setUpSolanaConnectEvents();
+        await context.store.setUpPolkadotConnectEvents();
       }
     },
   },

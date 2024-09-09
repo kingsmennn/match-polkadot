@@ -19,8 +19,7 @@
         </div>
 
         <div class="tw-space-x-2">
-          <wallet-multi-button></wallet-multi-button>
-          <!-- <button
+          <button
             id="account-type"
             class="tw-inline-flex tw-items-center tw-p-1 tw-px-3 tw-rounded-full tw-bg-white tw-select-none tw-text-black hover:tw-bg-white/80 tw-relative tw-transition-all tw-duration-300"
             :disabled="connecting"
@@ -44,9 +43,9 @@
               class="tw-h-1.5 tw-w-1.5 tw-absolute tw-bottom-full tw-left-0 tw-bg-white tw-rounded-full tw-animate-ping"
             >
             </span>
-          </button> -->
+          </button>
 
-          <!-- <v-menu
+          <v-menu
             v-if="userStore.isConnected"
             activator="#account-type"
             transition="slide-y-transition"
@@ -86,7 +85,7 @@
                 Complete onboarding to start using the platform
               </span>
             </div>
-          </v-menu> -->
+          </v-menu>
         </div>
       </div>
     </header>

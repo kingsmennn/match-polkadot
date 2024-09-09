@@ -2469,11 +2469,6 @@
     estree-walker "^2.0.2"
     picomatch "^2.3.1"
 
-"@scio-labs/use-inkathon@0.11.0":
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/@scio-labs/use-inkathon/-/use-inkathon-0.11.0.tgz#05e760ad8538101f0de74051e82eee56786bddca"
-  integrity sha512-EAZ4QNzUa0pUYNY8Z7sFSWFtGMzWmGYFf5J+lDUskSascwoNpqVkmLauLPnqua/XCoF3t8eLDaKZNnrF+6JKDQ==
-
 "@scure/base@^1.1.1", "@scure/base@^1.1.5", "@scure/base@~1.1.6":
   version "1.1.8"
   resolved "https://registry.yarnpkg.com/@scure/base/-/base-1.1.8.tgz#8f23646c352f020c83bca750a82789e246d42b50"
@@ -3334,18 +3329,6 @@
   integrity sha512-UoKGxQ3r5kYI9dALKJapMmuK+1zWM/H17Z1+iwnNmzcJRnfFuevZs375TA5rW31pu4BS4NoSy1fRsexDXfWn5w==
   dependencies:
     tslib "^2.4.0"
-
-"@tanstack/query-core@5.55.2":
-  version "5.55.2"
-  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.55.2.tgz#3109abeb3393f48a0781667093ad7c21ca34920c"
-  integrity sha512-WfuUx06sw/V3R2tRRQf4KZj0g4Q5EHrTdwJmCUovMFuHWVzDvLd5U+B7d5Pk8ni5w5SGpUuzGuQv3nN8xo1QbQ==
-
-"@tanstack/react-query@^5.17.19":
-  version "5.55.2"
-  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-5.55.2.tgz#071c5a2f67aecefc06bbed866753f5e07a9239bd"
-  integrity sha512-PkbEmO64nphWPhufkE9aJ+iEScg8tNNCykYlH7vDwb2R6G8uJC+HTJgXc2n8cRaJe6ETVIeQLFFESVd+2N/tww==
-  dependencies:
-    "@tanstack/query-core" "5.55.2"
 
 "@tootallnate/once@2":
   version "2.0.0"
