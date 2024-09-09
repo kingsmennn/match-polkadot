@@ -70,9 +70,13 @@ const env = useRuntimeConfig().public;
 
 const wsProvider = new WsProvider(env.polkadotRpcUrl);
 const api = await ApiPromise.create({ provider: wsProvider });
+const gasLimit = 3000n * 1000000n;
+const storageDepositLimit = null;
 
 const wallet = useAnchorWallet();
-export const programID = new PublicKey(env.contractId);
+export const programID = new PublicKey(
+  "89mKL8vWpyvdSimdYoZgXzMF9pb69VopCcAh1DZP41cL"
+);
 const preflightCommitment = "processed";
 const connection = new Connection(env.solanaRpcUrl, preflightCommitment);
 const provider = computed(() => {
@@ -127,7 +131,6 @@ export const useUserStore = defineStore(STORE_KEY, {
     async connectToPolkadot() {
       try {
         const accounts = await connectExtension();
-        // Set the account ID (address)
         this.accountId = accounts![0].address;
 
         const blockchainUser = await this.fetchUser(this.accountId);
@@ -158,11 +161,19 @@ export const useUserStore = defineStore(STORE_KEY, {
       const contract = await this.getContract();
 
       try {
-        const result = await contract.query.get(account_id, {
-          // gasLimit,
-          // storageDepositLimit,
-        });
-        console.log(result);
+        const { result } = await contract.query.getUser(
+          account_id,
+          {
+            gasLimit,
+            storageDepositLimit,
+          },
+          account_id
+        );
+
+        if (result.isErr) {
+          throw new Error(result.asErr.toString());
+        }
+
         // const [profilePda, _] = findProgramAddressSync(
         //   [utf8.encode(USER_TAG), account_id.toBuffer()],
         //   programID
@@ -183,6 +194,7 @@ export const useUserStore = defineStore(STORE_KEY, {
         // ];
         // return results;
       } catch (error) {
+        console.log({ error });
         return [0, "", "", [0, 0], 0, 0, 0];
       }
     },
@@ -238,13 +250,36 @@ export const useUserStore = defineStore(STORE_KEY, {
       long,
       account_type,
     }: CreateUserDTO): Promise<string | undefined> {
+      const contract = await this.getContract();
+
       try {
+        const injector = await web3FromAddress(this.accountId!);
+        await contract.tx
+          .createUser(
+            {
+              gasLimit,
+              storageDepositLimit,
+            },
+            username,
+            phone,
+            lat,
+            long,
+            account_type
+          )
+          .signAndSend(this.accountId!, { signer: injector.signer });
+        //       await contract.tx
+        // .inc({ storageDepositLimit, gasLimit }, incValue)
+        // .signAndSend(alicePair, result => {
+        //   if (result.status.isInBlock) {
+        //     console.log('in a block');
+        //   } else if (result.status.isFinalized) {
+        //     console.log('finalized');
+        //   }
+        // });
         const [profilePda, _] = findProgramAddressSync(
           [utf8.encode(USER_TAG), wallet!.value!.publicKey!.toBuffer()],
           programID
         );
-
-        const contract = await this.getContract();
 
         const latitude = new BN(
           Math.trunc(lat * 10 ** LOCATION_DECIMALS).toString()

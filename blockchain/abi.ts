@@ -1,6 +1,6 @@
 export const marketAbi = {
   source: {
-    hash: "0x18d2b51434caa20ac5f263faba01eb56c16741eb21b61024a48ddac9d1c688b3",
+    hash: "0xce8b9bf95506cdc078fee58dc8e365c8e616171f0286eef089a8e5708c7c7f90",
     language: "ink! 5.0.0",
     compiler: "rustc 1.80.0-nightly",
     build_info: {
@@ -42,19 +42,19 @@ export const marketAbi = {
       },
       balance: {
         displayName: ["Balance"],
-        type: 40,
+        type: 46,
       },
       blockNumber: {
         displayName: ["BlockNumber"],
-        type: 42,
+        type: 48,
       },
       chainExtension: {
         displayName: ["ChainExtension"],
-        type: 43,
+        type: 49,
       },
       hash: {
         displayName: ["Hash"],
-        type: 41,
+        type: 47,
       },
       maxEventTopics: 4,
       staticBufferSize: 16384,
@@ -805,6 +805,69 @@ export const marketAbi = {
           type: 37,
         },
         selector: "0x00cf33d5",
+      },
+      {
+        args: [
+          {
+            label: "user_address",
+            type: {
+              displayName: ["AccountId"],
+              type: 4,
+            },
+          },
+        ],
+        default: false,
+        docs: [],
+        label: "get_user",
+        mutates: false,
+        payable: false,
+        returnType: {
+          displayName: ["ink", "MessageResult"],
+          type: 40,
+        },
+        selector: "0xa4ca534e",
+      },
+      {
+        args: [
+          {
+            label: "request_id",
+            type: {
+              displayName: ["u64"],
+              type: 0,
+            },
+          },
+        ],
+        default: false,
+        docs: [],
+        label: "get_request",
+        mutates: false,
+        payable: false,
+        returnType: {
+          displayName: ["ink", "MessageResult"],
+          type: 42,
+        },
+        selector: "0x77ba7f13",
+      },
+      {
+        args: [
+          {
+            label: "offer_id",
+            type: {
+              displayName: ["u64"],
+              type: 0,
+            },
+          },
+        ],
+        default: false,
+        docs: [],
+        label: "get_offer",
+        mutates: false,
+        payable: false,
+        returnType: {
+          displayName: ["ink", "MessageResult"],
+          type: 44,
+        },
+        selector: "0xdd4e4ee2",
       },
     ],
   },
@@ -2290,12 +2353,225 @@ export const marketAbi = {
       id: 40,
       type: {
         def: {
+          variant: {
+            variants: [
+              {
+                fields: [
+                  {
+                    type: 41,
+                  },
+                ],
+                index: 0,
+                name: "Ok",
+              },
+              {
+                fields: [
+                  {
+                    type: 36,
+                  },
+                ],
+                index: 1,
+                name: "Err",
+              },
+            ],
+          },
+        },
+        params: [
+          {
+            name: "T",
+            type: 41,
+          },
+          {
+            name: "E",
+            type: 36,
+          },
+        ],
+        path: ["Result"],
+      },
+    },
+    {
+      id: 41,
+      type: {
+        def: {
+          variant: {
+            variants: [
+              {
+                index: 0,
+                name: "None",
+              },
+              {
+                fields: [
+                  {
+                    type: 7,
+                  },
+                ],
+                index: 1,
+                name: "Some",
+              },
+            ],
+          },
+        },
+        params: [
+          {
+            name: "T",
+            type: 7,
+          },
+        ],
+        path: ["Option"],
+      },
+    },
+    {
+      id: 42,
+      type: {
+        def: {
+          variant: {
+            variants: [
+              {
+                fields: [
+                  {
+                    type: 43,
+                  },
+                ],
+                index: 0,
+                name: "Ok",
+              },
+              {
+                fields: [
+                  {
+                    type: 36,
+                  },
+                ],
+                index: 1,
+                name: "Err",
+              },
+            ],
+          },
+        },
+        params: [
+          {
+            name: "T",
+            type: 43,
+          },
+          {
+            name: "E",
+            type: 36,
+          },
+        ],
+        path: ["Result"],
+      },
+    },
+    {
+      id: 43,
+      type: {
+        def: {
+          variant: {
+            variants: [
+              {
+                index: 0,
+                name: "None",
+              },
+              {
+                fields: [
+                  {
+                    type: 17,
+                  },
+                ],
+                index: 1,
+                name: "Some",
+              },
+            ],
+          },
+        },
+        params: [
+          {
+            name: "T",
+            type: 17,
+          },
+        ],
+        path: ["Option"],
+      },
+    },
+    {
+      id: 44,
+      type: {
+        def: {
+          variant: {
+            variants: [
+              {
+                fields: [
+                  {
+                    type: 45,
+                  },
+                ],
+                index: 0,
+                name: "Ok",
+              },
+              {
+                fields: [
+                  {
+                    type: 36,
+                  },
+                ],
+                index: 1,
+                name: "Err",
+              },
+            ],
+          },
+        },
+        params: [
+          {
+            name: "T",
+            type: 45,
+          },
+          {
+            name: "E",
+            type: 36,
+          },
+        ],
+        path: ["Result"],
+      },
+    },
+    {
+      id: 45,
+      type: {
+        def: {
+          variant: {
+            variants: [
+              {
+                index: 0,
+                name: "None",
+              },
+              {
+                fields: [
+                  {
+                    type: 23,
+                  },
+                ],
+                index: 1,
+                name: "Some",
+              },
+            ],
+          },
+        },
+        params: [
+          {
+            name: "T",
+            type: 23,
+          },
+        ],
+        path: ["Option"],
+      },
+    },
+    {
+      id: 46,
+      type: {
+        def: {
           primitive: "u128",
         },
       },
     },
     {
-      id: 41,
+      id: 47,
       type: {
         def: {
           composite: {
@@ -2311,7 +2587,7 @@ export const marketAbi = {
       },
     },
     {
-      id: 42,
+      id: 48,
       type: {
         def: {
           primitive: "u32",
@@ -2319,7 +2595,7 @@ export const marketAbi = {
       },
     },
     {
-      id: 43,
+      id: 49,
       type: {
         def: {
           variant: {},
