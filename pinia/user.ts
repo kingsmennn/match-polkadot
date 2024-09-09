@@ -267,15 +267,7 @@ export const useUserStore = defineStore(STORE_KEY, {
             account_type
           )
           .signAndSend(this.accountId!, { signer: injector.signer });
-        //       await contract.tx
-        // .inc({ storageDepositLimit, gasLimit }, incValue)
-        // .signAndSend(alicePair, result => {
-        //   if (result.status.isInBlock) {
-        //     console.log('in a block');
-        //   } else if (result.status.isFinalized) {
-        //     console.log('finalized');
-        //   }
-        // });
+
         const [profilePda, _] = findProgramAddressSync(
           [utf8.encode(USER_TAG), wallet!.value!.publicKey!.toBuffer()],
           programID
