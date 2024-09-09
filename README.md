@@ -124,7 +124,7 @@ Certainly! Here's an outline for "Match" based on the categories you provided:
 
 ### Contracts
 
-- https://github.com/kingsmennn/match-contract-Polkadot
+- https://github.com/kingsmennn/match-contract-polkadot
 
 ### Contributing
 
