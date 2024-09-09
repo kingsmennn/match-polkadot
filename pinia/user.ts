@@ -52,6 +52,10 @@ import type {
 } from "@polkadot/extension-inject/types";
 import { stringToHex } from "@polkadot/util";
 
+import { ContractPromise } from "@polkadot/api-contract";
+
+// The address is the actual on-chain address as ss58 or AccountId object.
+
 type UserStore = {
   accountId: string | null;
   userDetails?: BlockchainUser;
@@ -63,6 +67,10 @@ type UserStore = {
 };
 
 const env = useRuntimeConfig().public;
+
+const wsProvider = new WsProvider(env.polkadotRpcUrl);
+const api = await ApiPromise.create({ provider: wsProvider });
+
 const wallet = useAnchorWallet();
 export const programID = new PublicKey(env.contractId);
 const preflightCommitment = "processed";
@@ -137,10 +145,7 @@ export const useUserStore = defineStore(STORE_KEY, {
       }
     },
     async getContract() {
-      if (!program.value) {
-        throw new Error("Program not initialized");
-      }
-      return program.value;
+      return new ContractPromise(api, marketAbi, env.contractId);
     },
 
     async disconnect() {
@@ -149,18 +154,21 @@ export const useUserStore = defineStore(STORE_KEY, {
       this.blockchainError.userNotFound = false;
     },
 
-    async fetchUser(account_id: String): Promise<any> {
+    async fetchUser(account_id: string): Promise<any> {
       const contract = await this.getContract();
-      // const [profilePda, _] = findProgramAddressSync(
-      //   [utf8.encode(USER_TAG), account_id.toBuffer()],
-      //   programID
-      // );
 
       try {
+        const result = await contract.query.get(account_id, {
+          // gasLimit,
+          // storageDepositLimit,
+        });
+        console.log(result);
+        // const [profilePda, _] = findProgramAddressSync(
+        //   [utf8.encode(USER_TAG), account_id.toBuffer()],
+        //   programID
+        // );
         // const userData = await contract.account.user.fetch(profilePda);
-
         // const accountType = Object.keys(userData.accountType)[0];
-
         // const results = [
         //   Number(userData.id),
         //   userData.username,
@@ -173,7 +181,6 @@ export const useUserStore = defineStore(STORE_KEY, {
         //   Number(userData.updatedAt),
         //   Number(accountType === AccountType.BUYER ? 0 : 1),
         // ];
-
         // return results;
       } catch (error) {
         return [0, "", "", [0, 0], 0, 0, 0];
