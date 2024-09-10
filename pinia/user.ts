@@ -27,10 +27,10 @@ import {
   PublicKey,
   SystemProgram,
 } from "@solana/web3.js";
-import { AnchorProvider, BN, Idl, Program } from "@project-serum/anchor";
+import { AnchorProvider, Idl, Program } from "@project-serum/anchor";
 import { marketAbi } from "@/blockchain/abi";
 import { connectExtension } from "@/utils/connect_web3";
-import { BN as BigInteger, BN_ONE } from "@polkadot/util";
+import { BN, BN_ONE } from "@polkadot/util";
 import type { WeightV2 } from "@polkadot/types/interfaces";
 
 import { toast } from "vue-sonner";
@@ -275,7 +275,7 @@ export const useUserStore = defineStore(STORE_KEY, {
           account_type == AccountType.BUYER ? 0 : 1
         );
 
-        const result = await contract.tx
+        await contract.tx
           .createUser(
             {
               gasLimit: api.registry.createType(
@@ -292,41 +292,13 @@ export const useUserStore = defineStore(STORE_KEY, {
           )
           .signAndSend(this.accountId!, { signer: injector.signer });
 
-        console.log(result);
-
-        console.log("done sending");
-
-        const [profilePda, _] = findProgramAddressSync(
-          [utf8.encode(USER_TAG), wallet!.value!.publicKey!.toBuffer()],
-          programID
-        );
-
-        const latitude = new BN(
-          Math.trunc(lat * 10 ** LOCATION_DECIMALS).toString()
-        );
-        const longitude = new BN(
-          Math.trunc(long * 10 ** LOCATION_DECIMALS).toString()
-        );
-
-        const tx = await contract.methods
-          .createUser(username, phone, latitude, longitude, {
-            [account_type]: {},
-          })
-          .accounts({
-            user: profilePda,
-            systemProgram: SystemProgram.programId,
-            userCounter: USER_COUNTER_PUBKEY,
-            authority: wallet!.value!.publicKey!,
-          })
-          .rpc();
-
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
-        const blockchainUser = await this.fetchUser(wallet!.value!.publicKey!);
+        const blockchainUser = await this.fetchUser(this.accountId!);
         this.storeUserDetails(blockchainUser);
 
         this.blockchainError.userNotFound = false;
-        return tx;
+        return undefined;
       } catch (error) {
         console.error("Error creating user:", error);
         throw error;
@@ -343,11 +315,6 @@ export const useUserStore = defineStore(STORE_KEY, {
       { tx: string; location: Location } | undefined
     > {
       try {
-        const [profilePda] = findProgramAddressSync(
-          [utf8.encode(USER_TAG), wallet!.value!.publicKey!.toBuffer()],
-          programID
-        );
-
         const contract = await this.getContract();
 
         const payload = {
@@ -363,27 +330,46 @@ export const useUserStore = defineStore(STORE_KEY, {
               (long || this.userDetails?.[3][0]!) * 10 ** LOCATION_DECIMALS
             ).toString()
           ),
-          account_type: {
-            [account_type ?? "buyer"]: {},
-          },
+          account_type: account_type == AccountType.BUYER ? 0 : 1,
         };
 
-        const tx = await contract.methods
+        const { gasRequired } = await contract.query.updateUser(
+          this.accountId!,
+          {
+            gasLimit: api.registry.createType("WeightV2", {
+              refTime: MAX_CALL_WEIGHT,
+              proofSize: PROOFSIZE,
+            }) as WeightV2,
+            storageDepositLimit,
+          },
+          payload.username,
+          payload.phone,
+          payload.lat,
+          payload.lng,
+          payload.account_type
+        );
+
+        const injector = await web3FromAddress(this.accountId!);
+
+        await contract.tx
           .updateUser(
+            {
+              gasLimit: api.registry.createType(
+                "WeightV2",
+                gasRequired
+              ) as WeightV2,
+              storageDepositLimit,
+            },
             payload.username,
             payload.phone,
             payload.lat,
             payload.lng,
             payload.account_type
           )
-          .accounts({
-            user: profilePda,
-            authority: wallet!.value!.publicKey!,
-          })
-          .rpc();
+          .signAndSend(this.accountId!, { signer: injector.signer });
 
         return {
-          tx,
+          tx: "",
           location: [Number(payload.lng), Number(payload.lat)],
         };
       } catch (error) {
