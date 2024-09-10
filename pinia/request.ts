@@ -109,78 +109,12 @@ export const useRequestsStore = defineStore("requests", {
         );
         if (result.isErr) {
           throw new Error(result.asErr.toString());
-        } else {
-          const userInfo = output?.toJSON();
-          const userData = (userInfo as any)?.ok;
-
-          const res: any = userData.map((request: any) => {
-            const lifecycle_ = request.lifecycle.toUpperCase();
-
-            let lifecycle: RequestLifecycleIndex =
-              RequestLifecycleIndex.PENDING;
-
-            Object.entries(RequestLifecycleIndex).forEach(([key, value]) => {
-              if (key.replaceAll("_", "") === lifecycle_) {
-                lifecycle = value as RequestLifecycleIndex;
-              }
-            });
-
-            return {
-              requestId: Number(request.id),
-              requestName: request.name,
-              buyerId: Number(request.buyerId),
-              sellersPriceQuote: Number(request.sellersPriceQuote),
-              lockedSellerId: Number(request.lockedSellerId),
-              description: request.description,
-              lifecycle,
-              longitude: Number(request.location.longitude.toString()),
-              latitude: Number(request.location.latitude.toString()),
-              createdAt: Number(request.createdAt.toString() / 1000),
-              updatedAt: Number(request.updatedAt.toString() / 1000),
-              images: request.images,
-            };
-          });
-
-          this.list = res;
-          return res;
         }
-      } catch (error) {
-        console.log({ error });
-        throw error;
-      }
-    },
-    async fetchAllSellersRequests(accountId: string) {
-      const env = useRuntimeConfig().public;
-      const userStore = useUserStore();
-      try {
-        const contract = await userStore.getContract();
-        const offerMade = await contract.account.offer.all([
-          {
-            memcmp: {
-              offset: 8 + 0,
-              bytes: accountId,
-            },
-          },
-        ]);
+        const userInfo = output?.toJSON();
+        const userData = (userInfo as any)?.ok;
 
-        const requests = [];
-
-        for (let i = 0; i < offerMade.length; i++) {
-          const offer = offerMade[i];
-          const requestMade = await contract.account.request.all([
-            {
-              memcmp: {
-                offset: 8 + 32,
-                bytes: ntobs58(offer.account.requestId),
-              },
-            },
-          ]);
-
-          const request = requestMade[0];
-
-          const lifecycle_ = Object.keys(
-            request.account.lifecycle
-          )[0].toUpperCase();
+        const res: any = userData.map((request: any) => {
+          const lifecycle_ = request.lifecycle.toUpperCase();
 
           let lifecycle: RequestLifecycleIndex = RequestLifecycleIndex.PENDING;
 
@@ -190,26 +124,103 @@ export const useRequestsStore = defineStore("requests", {
             }
           });
 
-          requests.push({
-            requestId: Number(request.account.id),
-            requestName: request.account.name,
-            buyerId: Number(request.account.buyerId),
-            sellersPriceQuote: Number(request.account.sellersPriceQuote),
-            lockedSellerId: Number(request.account.lockedSellerId),
-            description: request.account.description,
+          return {
+            requestId: Number(request.id),
+            requestName: request.name,
+            buyerId: Number(request.buyerId),
+            sellersPriceQuote: Number(request.sellersPriceQuote),
+            lockedSellerId: Number(request.lockedSellerId),
+            description: request.description,
             lifecycle,
-            longitude: Number(request.account.location.longitude.toString()),
-            latitude: Number(request.account.location.latitude.toString()),
-            createdAt: Number(request.account.createdAt.toString()),
-            updatedAt: Number(request.account.updatedAt.toString()),
-            images: request.account.images,
-          });
+            longitude: Number(request.location.longitude.toString()),
+            latitude: Number(request.location.latitude.toString()),
+            createdAt: Number(request.createdAt.toString() / 1000),
+            updatedAt: Number(request.updatedAt.toString() / 1000),
+            images: request.images,
+          };
+        });
+
+        this.list = res;
+        return res;
+      } catch (error) {
+        console.log({ error });
+        throw error;
+      }
+    },
+    async fetchAllSellersRequests(accountId: string) {
+      try {
+        const userStore = useUserStore();
+        const contract = await userStore.getContract();
+        const api = await userStore.polkadotApi();
+
+        const { result, output } = await contract.query.getSellerOffers(
+          accountId,
+          {
+            gasLimit: api?.registry.createType("WeightV2", {
+              refTime: MAX_CALL_WEIGHT,
+              proofSize: PROOFSIZE,
+            }) as WeightV2,
+            storageDepositLimit,
+          },
+          accountId
+        );
+
+        if (result.isErr) {
+          throw new Error(result.asErr.toString());
+        }
+
+        const offersData = output?.toJSON();
+
+        const offers = (offersData as any).ok;
+
+        const requests = [];
+
+        for (const offer of offers) {
+          const { output: requestOutput } = await contract.query.getRequestById(
+            userStore.accountId!,
+            {
+              gasLimit: api?.registry.createType("WeightV2", {
+                refTime: MAX_CALL_WEIGHT,
+                proofSize: PROOFSIZE,
+              }) as WeightV2,
+              storageDepositLimit,
+            },
+            offer.requestId
+          );
+
+          const requestData = (requestOutput?.toJSON() as any).ok;
+
+          if (requestData) {
+            const lifecycle_ = requestData.lifecycle.toUpperCase();
+            let lifecycle: RequestLifecycleIndex =
+              RequestLifecycleIndex.PENDING;
+            Object.entries(RequestLifecycleIndex).forEach(([key, value]) => {
+              if (key.replaceAll("_", "") === lifecycle_) {
+                lifecycle = value as RequestLifecycleIndex;
+              }
+            });
+
+            requests.push({
+              requestId: Number(requestData.id),
+              requestName: requestData.name,
+              buyerId: Number(requestData.buyerId),
+              sellersPriceQuote: Number(requestData.sellersPriceQuote),
+              lockedSellerId: Number(requestData.lockedSellerId),
+              description: requestData.description,
+              lifecycle,
+              longitude: Number(requestData.location.longitude.toString()),
+              latitude: Number(requestData.location.latitude.toString()),
+              createdAt: Number(requestData.createdAt.toString()),
+              updatedAt: Number(requestData.updatedAt.toString()),
+              images: requestData.images,
+            });
+          }
         }
 
         this.list = requests;
         return requests;
       } catch (error) {
-        console.log({ error });
+        console.error("Error fetching seller requests:", error);
         throw error;
       }
     },
