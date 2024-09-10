@@ -30,6 +30,8 @@ import {
 import { AnchorProvider, BN, Idl, Program } from "@project-serum/anchor";
 import { marketAbi } from "@/blockchain/abi";
 import { connectExtension } from "@/utils/connect_web3";
+import { BN as BigInteger, BN_ONE } from "@polkadot/util";
+import type { WeightV2 } from "@polkadot/types/interfaces";
 
 import { toast } from "vue-sonner";
 import {
@@ -67,7 +69,8 @@ type UserStore = {
 };
 
 const env = useRuntimeConfig().public;
-
+const MAX_CALL_WEIGHT = new BN(5_000_000_000_000).isub(BN_ONE);
+const PROOFSIZE = new BN(1_000_000);
 const wsProvider = new WsProvider(env.polkadotRpcUrl);
 const api = await ApiPromise.create({ provider: wsProvider });
 const gasLimit = 3000n * 1000000n;
@@ -163,7 +166,10 @@ export const useUserStore = defineStore(STORE_KEY, {
         const { result } = await contract.query.getUser(
           account_id,
           {
-            gasLimit,
+            gasLimit: api?.registry.createType("WeightV2", {
+              refTime: MAX_CALL_WEIGHT,
+              proofSize: PROOFSIZE,
+            }) as WeightV2,
             storageDepositLimit,
           },
           account_id
@@ -253,6 +259,7 @@ export const useUserStore = defineStore(STORE_KEY, {
 
       try {
         const injector = await web3FromAddress(this.accountId!);
+
         const result = await contract.tx
           .createUser(
             {
