@@ -155,8 +155,8 @@ export const useRequestsStore = defineStore("requests", {
               lifecycle,
               longitude: Number(request.location.longitude.toString()),
               latitude: Number(request.location.latitude.toString()),
-              createdAt: Number(request.createdAt.toString()),
-              updatedAt: Number(request.updatedAt.toString()),
+              createdAt: Number(request.createdAt.toString() / 1000),
+              updatedAt: Number(request.updatedAt.toString() / 1000),
               images: request.images,
             };
           });
@@ -280,8 +280,8 @@ export const useRequestsStore = defineStore("requests", {
             lifecycle,
             longitude: Number(userData.location.longitude.toString()),
             latitude: Number(userData.location.latitude.toString()),
-            createdAt: Number(userData.createdAt.toString()),
-            updatedAt: Number(userData.updatedAt.toString()),
+            createdAt: Number(userData.createdAt.toString() / 1000),
+            updatedAt: Number(userData.updatedAt.toString() / 1000),
             images: userData.images,
           };
         }
