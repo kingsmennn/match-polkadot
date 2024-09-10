@@ -116,7 +116,7 @@ export const useRequestsStore = defineStore("requests", {
         const api = await userStore.polkadotApi();
 
         const { result, output } = await contract.query.getUserRequests(
-          userStore.accountId!,
+          accountId,
           {
             gasLimit: api?.registry.createType("WeightV2", {
               refTime: MAX_CALL_WEIGHT,
@@ -124,7 +124,7 @@ export const useRequestsStore = defineStore("requests", {
             }) as WeightV2,
             storageDepositLimit,
           },
-          userStore.accountId!
+          accountId
         );
         if (result.isErr) {
           throw new Error(result.asErr.toString());
@@ -159,8 +159,6 @@ export const useRequestsStore = defineStore("requests", {
               images: request.images,
             };
           });
-
-          console.log({ res });
 
           this.list = res;
           return res;
@@ -310,44 +308,58 @@ export const useRequestsStore = defineStore("requests", {
       lat: number;
       long: number;
     }) {
-      const env = useRuntimeConfig().public;
-      const userStore = useUserStore();
       try {
+        const userStore = useUserStore();
         const contract = await userStore.getContract();
+        const api = await userStore.polkadotApi();
 
-        const allRequests = await contract.account.request.all([]);
+        const { result, output } = await contract.query.getAllRequests(
+          userStore.accountId!,
+          {
+            gasLimit: api?.registry.createType("WeightV2", {
+              refTime: MAX_CALL_WEIGHT,
+              proofSize: PROOFSIZE,
+            }) as WeightV2,
+            storageDepositLimit,
+          }
+        );
 
-        const res: any = allRequests.map((request) => {
-          const lifecycle_ = Object.keys(
-            request.account.lifecycle
-          )[0].toUpperCase();
+        if (result.isErr) {
+          throw new Error(result.asErr.toString());
+        } else {
+          const userInfo = output?.toJSON();
+          const userData = (userInfo as any)?.ok;
+          const res: any = userData.map((request: any) => {
+            const lifecycle_ = request.lifecycle.toUpperCase();
 
-          let lifecycle: RequestLifecycleIndex = RequestLifecycleIndex.PENDING;
+            let lifecycle: RequestLifecycleIndex =
+              RequestLifecycleIndex.PENDING;
 
-          Object.entries(RequestLifecycleIndex).forEach(([key, value]) => {
-            if (key.replaceAll("_", "") === lifecycle_) {
-              lifecycle = value as RequestLifecycleIndex;
-            }
+            Object.entries(RequestLifecycleIndex).forEach(([key, value]) => {
+              if (key.replaceAll("_", "") === lifecycle_) {
+                lifecycle = value as RequestLifecycleIndex;
+              }
+            });
+
+            return {
+              requestId: Number(request.id),
+              requestName: request.name,
+              buyerId: Number(request.buyerId),
+              sellersPriceQuote: Number(request.sellersPriceQuote),
+              lockedSellerId: Number(request.lockedSellerId),
+              description: request.description,
+              lifecycle,
+              longitude: Number(request.location.longitude.toString()),
+              latitude: Number(request.location.latitude.toString()),
+              createdAt: Number(request.createdAt.toString() / 1000),
+              updatedAt: Number(request.updatedAt.toString() / 1000),
+              images: request.images,
+            };
           });
 
-          return {
-            requestId: Number(request.account.id),
-            requestName: request.account.name,
-            buyerId: Number(request.account.buyerId),
-            sellersPriceQuote: Number(request.account.sellersPriceQuote),
-            lockedSellerId: Number(request.account.lockedSellerId),
-            description: request.account.description,
-            lifecycle,
-            longitude: Number(request.account.location.longitude.toString()),
-            latitude: Number(request.account.location.latitude.toString()),
-            createdAt: Number(request.account.createdAt.toString()),
-            updatedAt: Number(request.account.updatedAt.toString()),
-            images: request.account.images,
-          };
-        });
-
-        this.list = res;
-        return res;
+          this.list = res;
+          return res;
+        }
       } catch (error) {
         console.log({ error });
         throw error;
