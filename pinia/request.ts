@@ -417,63 +417,37 @@ export const useRequestsStore = defineStore("requests", {
     },
     async acceptOffer(offerId: number): Promise<any | undefined> {
       const userStore = useUserStore();
-      const { publicKey } = useWallet();
       try {
-        const [profilePda, _] = findProgramAddressSync(
-          [utf8.encode(USER_TAG), publicKey.value!.toBuffer()],
-          programID
-        );
+        const injector = await web3FromAddress(userStore.accountId!);
+        const api = await userStore.polkadotApi();
         const contract = await userStore.getContract();
 
-        const offerMade = await contract.account.offer.all([
+        const { gasRequired } = await contract.query.acceptOffer(
+          userStore.accountId!,
           {
-            memcmp: {
-              offset: 8 + 32,
-              bytes: ntobs58(offerId),
-            },
+            gasLimit: api?.registry.createType("WeightV2", {
+              refTime: MAX_CALL_WEIGHT,
+              proofSize: PROOFSIZE,
+            }) as WeightV2,
+            storageDepositLimit,
           },
-        ]);
+          offerId
+        );
 
-        const offer = offerMade[0];
-
-        const requestMade = await contract.account.request.all([
-          {
-            memcmp: {
-              offset: 8 + 32,
-              bytes: ntobs58(offer.account.requestId),
+        const result = await contract.tx
+          .acceptOffer(
+            {
+              gasLimit: api?.registry.createType(
+                "WeightV2",
+                gasRequired
+              ) as WeightV2,
+              storageDepositLimit,
             },
-          },
-        ]);
-
-        const offerAccounts = await contract.account.offer.all([
-          {
-            memcmp: {
-              offset: 8 + 32 + 8,
-              bytes: ntobs58(offer.account.requestId),
-            },
-          },
-        ]);
-
-        const request = requestMade[0];
-
-        const receipt = await contract.methods
-          .acceptOffer()
-          .accounts({
-            user: profilePda,
-            systemProgram: SystemProgram.programId,
-            authority: publicKey.value!,
-            offer: offer.publicKey,
-            request: request.publicKey,
-          })
-          .remainingAccounts(
-            offerAccounts.map((offerAccount) => ({
-              pubkey: offerAccount.publicKey,
-              isWritable: true,
-              isSigner: false,
-            }))
+            offerId
           )
-          .rpc();
-        return receipt;
+          .signAndSend(userStore.accountId!, { signer: injector.signer });
+
+        return result;
       } catch (error) {
         console.error(error);
         throw error;
@@ -503,29 +477,27 @@ export const useRequestsStore = defineStore("requests", {
           const userInfo = output?.toJSON();
           const userData = (userInfo as any)?.ok;
           console.log(userData);
+
+          const res: any = userData.map((offer: any) => {
+            const offer_: Offer = {
+              id: Number(offer.id),
+              offerId: Number(offer.id),
+              price: Number(offer.price),
+              images: offer.images,
+              requestId: offer.requestId,
+              storeName: offer.storeName,
+              sellerId: offer.sellerId,
+              isAccepted: offer.isAccepted,
+              createdAt: new Date(Number(offer.createdAt)),
+              updatedAt: new Date(Number(offer.updatedAt)),
+            };
+
+            return offer_;
+          });
+
+          this.list = res;
+          return res;
         }
-
-        return [];
-
-        // const res: any = offers.map((offer) => {
-        //   const offer_: Offer = {
-        //     id: Number(offer.account.id),
-        //     offerId: Number(offer.account.id),
-        //     price: Number(offer.account.price),
-        //     images: offer.account.images,
-        //     requestId: offer.account.requestId,
-        //     storeName: offer.account.storeName,
-        //     sellerId: offer.account.sellerId,
-        //     isAccepted: offer.account.isAccepted,
-        //     createdAt: new Date(Number(offer.account.createdAt)),
-        //     updatedAt: new Date(Number(offer.account.updatedAt)),
-        //   };
-
-        //   return offer_;
-        // });
-
-        // this.list = res;
-        // return res;
       } catch (error) {
         console.log({ error });
         throw error;

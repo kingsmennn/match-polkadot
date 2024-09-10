@@ -1,6 +1,12 @@
 import { defineStore } from "pinia";
 import { CreateStoreDTO, Store, STORE_STORE_KEY } from "@/types";
-import { programID, useUserStore } from "./user";
+import {
+  MAX_CALL_WEIGHT,
+  programID,
+  PROOFSIZE,
+  storageDepositLimit,
+  useUserStore,
+} from "./user";
 import {
   LOCATION_DECIMALS,
   STORE_COUNTER_PUBKEY,
@@ -13,6 +19,8 @@ import { findProgramAddressSync } from "@project-serum/anchor/dist/cjs/utils/pub
 import { utf8 } from "@project-serum/anchor/dist/cjs/utils/bytes";
 import { BN } from "@project-serum/anchor";
 import { ntobs58 } from "@/utils/nb58";
+import { web3FromAddress } from "@polkadot/extension-dapp";
+import type { WeightV2 } from "@polkadot/types/interfaces";
 
 export const useStoreStore = defineStore(STORE_STORE_KEY, {
   state: () => ({}),
@@ -28,62 +36,61 @@ export const useStoreStore = defineStore(STORE_STORE_KEY, {
       const userStore = useUserStore();
       const { publicKey } = useWallet();
       try {
-        const payload = {
+        const contract = await userStore.getContract();
+        const injector = await web3FromAddress(userStore.accountId!);
+        const api = await userStore.polkadotApi();
+
+        // new BN(
+        //   Math.trunc(
+        //     (long || this.userDetails?.[3][0]!) * 10 ** LOCATION_DECIMALS
+        //   ).toString()
+        // ),
+        const long = new BN(Math.trunc(longitude * 10 ** LOCATION_DECIMALS));
+        const lat = new BN(Math.trunc(latitude * 10 ** LOCATION_DECIMALS));
+        const { gasRequired } = await contract.query.createStore(
+          userStore.accountId!,
+          {
+            gasLimit: api?.registry.createType("WeightV2", {
+              refTime: MAX_CALL_WEIGHT,
+              proofSize: PROOFSIZE,
+            }) as WeightV2,
+            storageDepositLimit,
+          },
           name,
           description,
           phone,
-          long: Math.trunc(longitude * 10 ** LOCATION_DECIMALS),
-          lat: Math.trunc(latitude * 10 ** LOCATION_DECIMALS),
-        };
-
-        const contract = await userStore.getContract();
-
-        const [profilePda, _] = findProgramAddressSync(
-          [utf8.encode(USER_TAG), publicKey.value!.toBuffer()],
-          programID
+          lat,
+          long
         );
 
-        const storeCounter = await contract.account.counter.fetch(
-          STORE_COUNTER_PUBKEY
-        );
-
-        const [storePda] = findProgramAddressSync(
-          [
-            utf8.encode(STORE_TAG),
-            publicKey.value!.toBuffer(),
-            Buffer.from(storeCounter.current.toArray("le", 8)),
-          ],
-          programID
-        );
-
-        const receipt = await contract.methods
+        await contract.tx
           .createStore(
-            payload.name,
-            payload.description,
-            payload.phone,
-            new BN(payload.lat.toString()),
-            new BN(payload.long.toString())
+            {
+              gasLimit: api?.registry.createType(
+                "WeightV2",
+                gasRequired
+              ) as WeightV2,
+              storageDepositLimit,
+            },
+            name,
+            description,
+            phone,
+            lat,
+            long
           )
-          .accounts({
-            user: profilePda,
-            systemProgram: SystemProgram.programId,
-            storeCounter: STORE_COUNTER_PUBKEY,
-            authority: publicKey!.value!,
-            store: storePda,
-          })
-          .rpc();
+          .signAndSend(userStore.accountId!, { signer: injector.signer });
 
         userStore.storeDetails = [
           {
-            name: payload.name,
-            description: payload.description,
-            phone: payload.phone,
-            location: [payload.long, payload.lat],
+            name,
+            description,
+            phone,
+            location: [Number(long), Number(lat)],
           },
         ];
-        return receipt;
+        return undefined;
       } catch (error) {
-        console.error(error);
+        console.error("Error creating user:", error);
         throw error;
       }
     },
