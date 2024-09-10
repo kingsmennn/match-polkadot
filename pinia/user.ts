@@ -73,10 +73,7 @@ const MAX_CALL_WEIGHT = new BN(5_000_000_000_000).isub(BN_ONE);
 const PROOFSIZE = new BN(1_000_000);
 const wsProvider = new WsProvider(env.polkadotRpcUrl);
 const api = await ApiPromise.create({ provider: wsProvider });
-const gasLimit = api?.registry.createType("WeightV2", {
-  refTime: MAX_CALL_WEIGHT,
-  proofSize: PROOFSIZE,
-}) as WeightV2;
+
 const storageDepositLimit = null;
 
 const wallet = useAnchorWallet();
@@ -166,6 +163,10 @@ export const useUserStore = defineStore(STORE_KEY, {
       const contract = await this.getContract();
 
       try {
+        const gasLimit = api?.registry.createType("WeightV2", {
+          refTime: MAX_CALL_WEIGHT,
+          proofSize: PROOFSIZE,
+        }) as WeightV2;
         const { result, output } = await contract.query.getUser(
           account_id,
           {
@@ -258,10 +259,29 @@ export const useUserStore = defineStore(STORE_KEY, {
       try {
         const injector = await web3FromAddress(this.accountId!);
 
+        const { gasRequired } = await contract.query.createUser(
+          this.accountId!,
+          {
+            gasLimit: api.registry.createType("WeightV2", {
+              refTime: MAX_CALL_WEIGHT,
+              proofSize: PROOFSIZE,
+            }) as WeightV2,
+            storageDepositLimit,
+          },
+          username,
+          phone,
+          lat,
+          long,
+          account_type == AccountType.BUYER ? 0 : 1
+        );
+
         const result = await contract.tx
           .createUser(
             {
-              gasLimit,
+              gasLimit: api.registry.createType(
+                "WeightV2",
+                gasRequired
+              ) as WeightV2,
               storageDepositLimit,
             },
             username,
