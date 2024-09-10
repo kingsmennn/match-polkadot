@@ -66,7 +66,6 @@ type UserStore = {
     userNotFound: boolean;
     message?: string;
   };
-  polkadotApi?: ApiPromise;
 };
 
 const env = useRuntimeConfig().public;
@@ -103,7 +102,6 @@ export const useUserStore = defineStore(STORE_KEY, {
     blockchainError: {
       userNotFound: false,
     },
-    polkadotApi: undefined,
   }),
   getters: {
     isConnected: (state) => !!state.accountId,
@@ -151,11 +149,8 @@ export const useUserStore = defineStore(STORE_KEY, {
       }
     },
     async getContract() {
-      return new ContractPromise(
-        this.polkadotApi as ApiPromise,
-        marketAbi,
-        env.contractId
-      );
+      const api = await this.polkadotApi();
+      return new ContractPromise(api as ApiPromise, marketAbi, env.contractId);
     },
 
     async disconnect() {
@@ -165,11 +160,11 @@ export const useUserStore = defineStore(STORE_KEY, {
     },
 
     async fetchUser(account_id: string): Promise<any> {
-      console.log(this.polkadotApi);
       const contract = await this.getContract();
 
       try {
-        const gasLimit = this.polkadotApi?.registry.createType("WeightV2", {
+        const api = await this.polkadotApi();
+        const gasLimit = api?.registry.createType("WeightV2", {
           refTime: MAX_CALL_WEIGHT,
           proofSize: PROOFSIZE,
         }) as WeightV2;
@@ -264,11 +259,11 @@ export const useUserStore = defineStore(STORE_KEY, {
 
       try {
         const injector = await web3FromAddress(this.accountId!);
-
+        const api = await this.polkadotApi();
         const { gasRequired } = await contract.query.createUser(
           this.accountId!,
           {
-            gasLimit: this.polkadotApi?.registry.createType("WeightV2", {
+            gasLimit: api?.registry.createType("WeightV2", {
               refTime: MAX_CALL_WEIGHT,
               proofSize: PROOFSIZE,
             }) as WeightV2,
@@ -284,7 +279,7 @@ export const useUserStore = defineStore(STORE_KEY, {
         await contract.tx
           .createUser(
             {
-              gasLimit: this.polkadotApi?.registry.createType(
+              gasLimit: api?.registry.createType(
                 "WeightV2",
                 gasRequired
               ) as WeightV2,
@@ -339,10 +334,12 @@ export const useUserStore = defineStore(STORE_KEY, {
           account_type: account_type == AccountType.BUYER ? 0 : 1,
         };
 
+        const api = await this.polkadotApi();
+
         const { gasRequired } = await contract.query.updateUser(
           this.accountId!,
           {
-            gasLimit: this.polkadotApi?.registry.createType("WeightV2", {
+            gasLimit: api?.registry.createType("WeightV2", {
               refTime: MAX_CALL_WEIGHT,
               proofSize: PROOFSIZE,
             }) as WeightV2,
@@ -360,7 +357,7 @@ export const useUserStore = defineStore(STORE_KEY, {
         await contract.tx
           .updateUser(
             {
-              gasLimit: this.polkadotApi?.registry.createType(
+              gasLimit: api?.registry.createType(
                 "WeightV2",
                 gasRequired
               ) as WeightV2,
@@ -439,6 +436,12 @@ export const useUserStore = defineStore(STORE_KEY, {
       }
     },
 
+    async polkadotApi() {
+      return await ApiPromise.create({
+        provider: wsProvider,
+      });
+    },
+
     async getUserLocation() {
       const env = useRuntimeConfig().public;
 
@@ -477,13 +480,6 @@ export const useUserStore = defineStore(STORE_KEY, {
     ],
     async afterRestore(context) {
       console.log("store restored");
-      const api = await ApiPromise.create({
-        provider: wsProvider,
-      });
-
-      console.log({ api });
-
-      context.store.polkadotApi = api;
 
       if (context.store.accountId) {
         await context.store.setUpPolkadotConnectEvents();
