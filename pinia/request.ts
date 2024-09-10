@@ -69,40 +69,41 @@ export const useRequestsStore = defineStore("requests", {
         const injector = await web3FromAddress(userStore.accountId!);
         const api = await userStore.polkadotApi();
         const contract = await userStore.getContract();
-        const { gasRequired } = await contract.query.createUser(
-          userStore.accountId!,
-          {
-            gasLimit: api?.registry.createType("WeightV2", {
-              refTime: MAX_CALL_WEIGHT,
-              proofSize: PROOFSIZE,
-            }) as WeightV2,
-            storageDepositLimit,
-          },
-          name,
-          description,
-          [...images],
-          new BN(Math.trunc(latitude).toString()),
-          new BN(Math.trunc(longitude).toString())
-        );
 
-        await contract.tx
-          .createUser(
-            {
-              gasLimit: api?.registry.createType(
-                "WeightV2",
-                gasRequired
-              ) as WeightV2,
-              storageDepositLimit,
-            },
-            name,
-            description,
-            [...images],
-            new BN(Math.trunc(latitude).toString()),
-            new BN(Math.trunc(longitude).toString())
-          )
-          .signAndSend(userStore.accountId!, { signer: injector.signer });
+        // const { gasRequired } = await contract.query.createUser(
+        //   userStore.accountId!,
+        //   {
+        //     gasLimit: api?.registry.createType("WeightV2", {
+        //       refTime: MAX_CALL_WEIGHT,
+        //       proofSize: PROOFSIZE,
+        //     }) as WeightV2,
+        //     storageDepositLimit,
+        //   },
+        //   name,
+        //   description,
+        //   [...images],
+        //   new BN(Math.trunc(latitude).toString()),
+        //   new BN(Math.trunc(longitude).toString())
+        // );
 
-        return "done";
+        // const result = await contract.tx
+        //   .createUser(
+        //     {
+        //       gasLimit: api?.registry.createType(
+        //         "WeightV2",
+        //         gasRequired
+        //       ) as WeightV2,
+        //       storageDepositLimit,
+        //     },
+        //     name,
+        //     description,
+        //     [...images],
+        //     new BN(Math.trunc(latitude).toString()),
+        //     new BN(Math.trunc(longitude).toString())
+        //   )
+        //   .signAndSend(userStore.accountId!, { signer: injector.signer });
+
+        return result;
       } catch (error) {
         console.error("Error creating user:", error);
         throw error;
