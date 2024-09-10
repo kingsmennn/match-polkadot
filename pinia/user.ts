@@ -73,7 +73,10 @@ const MAX_CALL_WEIGHT = new BN(5_000_000_000_000).isub(BN_ONE);
 const PROOFSIZE = new BN(1_000_000);
 const wsProvider = new WsProvider(env.polkadotRpcUrl);
 const api = await ApiPromise.create({ provider: wsProvider });
-const gasLimit = 3000n * 1000000n;
+const gasLimit = api?.registry.createType("WeightV2", {
+  refTime: MAX_CALL_WEIGHT,
+  proofSize: PROOFSIZE,
+}) as WeightV2;
 const storageDepositLimit = null;
 
 const wallet = useAnchorWallet();
@@ -163,13 +166,10 @@ export const useUserStore = defineStore(STORE_KEY, {
       const contract = await this.getContract();
 
       try {
-        const { result } = await contract.query.getUser(
+        const { result, output } = await contract.query.getUser(
           account_id,
           {
-            gasLimit: api?.registry.createType("WeightV2", {
-              refTime: MAX_CALL_WEIGHT,
-              proofSize: PROOFSIZE,
-            }) as WeightV2,
+            gasLimit,
             storageDepositLimit,
           },
           account_id
@@ -177,27 +177,22 @@ export const useUserStore = defineStore(STORE_KEY, {
         if (result.isErr) {
           throw new Error(result.asErr.toString());
         } else {
-          console.log(result.toHuman());
+          const userInfo = output?.toHuman();
+          console.log(userInfo);
+          // const results = [
+          //   Number(userData.id),
+          //   userData.username,
+          //   userData.phone,
+          //   [
+          //     Number(userData.location.longitude),
+          //     Number(userData.location.latitude),
+          //   ],
+          //   Number(userData.createdAt),
+          //   Number(userData.updatedAt),
+          //   Number(accountType === AccountType.BUYER ? 0 : 1),
+          // ];
+          // return results;
         }
-        // const [profilePda, _] = findProgramAddressSync(
-        //   [utf8.encode(USER_TAG), account_id.toBuffer()],
-        //   programID
-        // );
-        // const userData = await contract.account.user.fetch(profilePda);
-        // const accountType = Object.keys(userData.accountType)[0];
-        // const results = [
-        //   Number(userData.id),
-        //   userData.username,
-        //   userData.phone,
-        //   [
-        //     Number(userData.location.longitude),
-        //     Number(userData.location.latitude),
-        //   ],
-        //   Number(userData.createdAt),
-        //   Number(userData.updatedAt),
-        //   Number(accountType === AccountType.BUYER ? 0 : 1),
-        // ];
-        // return results;
       } catch (error) {
         console.log({ error });
         return [0, "", "", [0, 0], 0, 0, 0];
