@@ -1,24 +1,14 @@
 import { defineStore } from "pinia";
-import { CreateStoreDTO, Store, STORE_STORE_KEY } from "@/types";
+import { CreateStoreDTO, STORE_STORE_KEY } from "@/types";
 import {
   MAX_CALL_WEIGHT,
-  programID,
   PROOFSIZE,
   storageDepositLimit,
   useUserStore,
 } from "./user";
-import {
-  LOCATION_DECIMALS,
-  STORE_COUNTER_PUBKEY,
-  USER_TAG,
-} from "@/utils/constants";
-import { getEvmAddress } from "@/utils/contract-utils";
-import { SystemProgram } from "@solana/web3.js";
-import { useWallet } from "solana-wallets-vue";
-import { findProgramAddressSync } from "@project-serum/anchor/dist/cjs/utils/pubkey";
-import { utf8 } from "@project-serum/anchor/dist/cjs/utils/bytes";
-import { BN } from "@project-serum/anchor";
-import { ntobs58 } from "@/utils/nb58";
+import { LOCATION_DECIMALS } from "@/utils/constants";
+
+import { BN, BN_ONE } from "@polkadot/util";
 import { web3FromAddress } from "@polkadot/extension-dapp";
 import type { WeightV2 } from "@polkadot/types/interfaces";
 
@@ -33,20 +23,18 @@ export const useStoreStore = defineStore(STORE_STORE_KEY, {
       latitude,
       longitude,
     }: CreateStoreDTO): Promise<any | undefined> {
-      const userStore = useUserStore();
-      const { publicKey } = useWallet();
       try {
+        const userStore = useUserStore();
         const contract = await userStore.getContract();
         const injector = await web3FromAddress(userStore.accountId!);
         const api = await userStore.polkadotApi();
 
-        // new BN(
-        //   Math.trunc(
-        //     (long || this.userDetails?.[3][0]!) * 10 ** LOCATION_DECIMALS
-        //   ).toString()
-        // ),
-        const long = new BN(Math.trunc(longitude * 10 ** LOCATION_DECIMALS));
-        const lat = new BN(Math.trunc(latitude * 10 ** LOCATION_DECIMALS));
+        const long = new BN(
+          Math.trunc(longitude * 10 ** LOCATION_DECIMALS).toString()
+        );
+        const lat = new BN(
+          Math.trunc(latitude * 10 ** LOCATION_DECIMALS).toString()
+        );
         const { gasRequired } = await contract.query.createStore(
           userStore.accountId!,
           {
@@ -95,35 +83,47 @@ export const useStoreStore = defineStore(STORE_STORE_KEY, {
       }
     },
     async getUserStores(accountId: string): Promise<any[] | undefined> {
-      const userStore = useUserStore();
-      const contract = await userStore.getContract();
       try {
-        const stores = await contract.account.store.all([
+        const userStore = useUserStore();
+        const contract = await userStore.getContract();
+        const api = await userStore.polkadotApi();
+
+        const { result, output } = await contract.query.getUserStores(
+          accountId,
           {
-            memcmp: {
-              offset: 8 + 0,
-              bytes: accountId,
-            },
+            gasLimit: api?.registry.createType("WeightV2", {
+              refTime: MAX_CALL_WEIGHT,
+              proofSize: PROOFSIZE,
+            }) as WeightV2,
+            storageDepositLimit,
           },
-        ]);
+          accountId
+        );
+        if (result.isErr) {
+          throw new Error(result.asErr.toString());
+        } else {
+          const userInfo = output?.toJSON();
+          const userData = (userInfo as any)?.ok;
 
-        const response: any = stores.map((store) => {
-          return [
-            store.account.id.toString(),
-            store.account.name,
-            store.account.description,
-            store.account.phone,
-            [
-              Number(store.account.location.longitude.toString()),
-              Number(store.account.location.latitude.toString()),
-            ],
-          ];
-        });
+          const response: any = userData.map((store: any) => {
+            return [
+              store.id.toString(),
+              store.name,
+              store.description,
+              store.phone,
+              [
+                Number(store.location.longitude.toString()),
+                Number(store.location.latitude.toString()),
+              ],
+            ];
+          });
 
-        userStore.storeDetails = response;
-        return response;
+          userStore.storeDetails = response;
+          return response;
+        }
       } catch (error) {
-        console.error(error);
+        console.log({ error });
+        throw error;
       }
     },
   },

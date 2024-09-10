@@ -3,39 +3,20 @@ import {
   CreateOfferDTO,
   CreateRequestDTO,
   Offer,
-  RequestLifecycle,
   RequestLifecycleIndex,
   RequestResponse,
 } from "@/types";
 
 import {
   MAX_CALL_WEIGHT,
-  programID,
   PROOFSIZE,
   storageDepositLimit,
   useUserStore,
 } from "./user";
-import {
-  OFFER_COUNTER_PUBKEY,
-  OFFER_TAG,
-  REQUEST_COUNTER_PUBKEY,
-  REQUEST_TAG,
-  USER_TAG,
-} from "@/utils/constants";
-import { request } from "http";
-import { findProgramAddressSync } from "@project-serum/anchor/dist/cjs/utils/pubkey";
-import { utf8 } from "@project-serum/anchor/dist/cjs/utils/bytes";
-import { useWallet } from "solana-wallets-vue";
-import { PublicKey, SystemProgram } from "@solana/web3.js";
-import { BN, utils } from "@project-serum/anchor";
-import { off } from "process";
+
+import { BN, BN_ONE } from "@polkadot/util";
 import { ntobs58 } from "@/utils/nb58";
-import {
-  web3Enable,
-  web3Accounts,
-  web3FromAddress,
-  web3FromSource,
-} from "@polkadot/extension-dapp";
+import { web3FromAddress } from "@polkadot/extension-dapp";
 import type { WeightV2 } from "@polkadot/types/interfaces";
 
 type RequestsStoreType = {

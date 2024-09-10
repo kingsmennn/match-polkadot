@@ -1,6 +1,6 @@
 export const marketAbi = {
   source: {
-    hash: "0xce4afff8bb819848a686e25abe95105e8982d32ea51e535645bc29cf6e6ea5d0",
+    hash: "0x7394c09b4f325dca0068a50c291fc30bb780b10edbe6192b082a41ea66ba9270",
     language: "ink! 5.0.0",
     compiler: "rustc 1.80.0-nightly",
     build_info: {
@@ -29,7 +29,7 @@ export const marketAbi = {
         payable: false,
         returnType: {
           displayName: ["ink_primitives", "ConstructorResult"],
-          type: 35,
+          type: 38,
         },
         selector: "0x9bae9d5e",
       },
@@ -38,23 +38,23 @@ export const marketAbi = {
     environment: {
       accountId: {
         displayName: ["AccountId"],
-        type: 4,
+        type: 3,
       },
       balance: {
         displayName: ["Balance"],
-        type: 50,
+        type: 55,
       },
       blockNumber: {
         displayName: ["BlockNumber"],
-        type: 52,
+        type: 57,
       },
       chainExtension: {
         displayName: ["ChainExtension"],
-        type: 53,
+        type: 58,
       },
       hash: {
         displayName: ["Hash"],
-        type: 51,
+        type: 56,
       },
       maxEventTopics: 4,
       staticBufferSize: 16384,
@@ -72,7 +72,7 @@ export const marketAbi = {
             label: "user_address",
             type: {
               displayName: ["AccountId"],
-              type: 4,
+              type: 3,
             },
           },
           {
@@ -99,7 +99,7 @@ export const marketAbi = {
             label: "account_type",
             type: {
               displayName: ["u8"],
-              type: 6,
+              type: 5,
             },
           },
         ],
@@ -117,7 +117,7 @@ export const marketAbi = {
             label: "user_address",
             type: {
               displayName: ["AccountId"],
-              type: 4,
+              type: 3,
             },
           },
           {
@@ -144,7 +144,7 @@ export const marketAbi = {
             label: "account_type",
             type: {
               displayName: ["u8"],
-              type: 6,
+              type: 5,
             },
           },
         ],
@@ -162,7 +162,7 @@ export const marketAbi = {
             label: "seller_address",
             type: {
               displayName: ["AccountId"],
-              type: 4,
+              type: 3,
             },
           },
           {
@@ -225,7 +225,7 @@ export const marketAbi = {
             label: "buyer_address",
             type: {
               displayName: ["AccountId"],
-              type: 4,
+              type: 3,
             },
           },
           {
@@ -261,7 +261,7 @@ export const marketAbi = {
             label: "buyer_address",
             type: {
               displayName: ["AccountId"],
-              type: 4,
+              type: 3,
             },
           },
           {
@@ -306,7 +306,7 @@ export const marketAbi = {
             label: "lifecycle",
             type: {
               displayName: ["u8"],
-              type: 6,
+              type: 5,
             },
           },
           {
@@ -396,7 +396,7 @@ export const marketAbi = {
             label: "seller_address",
             type: {
               displayName: ["AccountId"],
-              type: 4,
+              type: 3,
             },
           },
           {
@@ -531,7 +531,7 @@ export const marketAbi = {
             label: "seller_address",
             type: {
               displayName: ["AccountId"],
-              type: 4,
+              type: 3,
             },
           },
         ],
@@ -544,7 +544,7 @@ export const marketAbi = {
     ],
     lang_error: {
       displayName: ["ink", "LangError"],
-      type: 36,
+      type: 39,
     },
     messages: [
       {
@@ -592,7 +592,7 @@ export const marketAbi = {
         payable: false,
         returnType: {
           displayName: ["ink", "MessageResult"],
-          type: 37,
+          type: 40,
         },
         selector: "0xf617bfd8",
       },
@@ -641,7 +641,7 @@ export const marketAbi = {
         payable: false,
         returnType: {
           displayName: ["ink", "MessageResult"],
-          type: 37,
+          type: 40,
         },
         selector: "0x50d56931",
       },
@@ -690,7 +690,7 @@ export const marketAbi = {
         payable: false,
         returnType: {
           displayName: ["ink", "MessageResult"],
-          type: 37,
+          type: 40,
         },
         selector: "0xfd41fc6e",
       },
@@ -739,7 +739,7 @@ export const marketAbi = {
         payable: false,
         returnType: {
           displayName: ["ink", "MessageResult"],
-          type: 37,
+          type: 40,
         },
         selector: "0xa90550ab",
       },
@@ -781,7 +781,7 @@ export const marketAbi = {
         payable: false,
         returnType: {
           displayName: ["ink", "MessageResult"],
-          type: 37,
+          type: 40,
         },
         selector: "0x7f170b70",
       },
@@ -802,7 +802,7 @@ export const marketAbi = {
         payable: false,
         returnType: {
           displayName: ["ink", "MessageResult"],
-          type: 37,
+          type: 40,
         },
         selector: "0x00cf33d5",
       },
@@ -812,7 +812,7 @@ export const marketAbi = {
             label: "user_address",
             type: {
               displayName: ["AccountId"],
-              type: 4,
+              type: 3,
             },
           },
         ],
@@ -823,7 +823,7 @@ export const marketAbi = {
         payable: false,
         returnType: {
           displayName: ["ink", "MessageResult"],
-          type: 40,
+          type: 43,
         },
         selector: "0xa4ca534e",
       },
@@ -844,7 +844,7 @@ export const marketAbi = {
         payable: false,
         returnType: {
           displayName: ["ink", "MessageResult"],
-          type: 42,
+          type: 45,
         },
         selector: "0x77ba7f13",
       },
@@ -865,7 +865,7 @@ export const marketAbi = {
         payable: false,
         returnType: {
           displayName: ["ink", "MessageResult"],
-          type: 44,
+          type: 47,
         },
         selector: "0xdd4e4ee2",
       },
@@ -886,7 +886,7 @@ export const marketAbi = {
         payable: false,
         returnType: {
           displayName: ["ink", "MessageResult"],
-          type: 46,
+          type: 49,
         },
         selector: "0xbbd2cc92",
       },
@@ -896,7 +896,7 @@ export const marketAbi = {
             label: "user_address",
             type: {
               displayName: ["AccountId"],
-              type: 4,
+              type: 3,
             },
           },
         ],
@@ -907,7 +907,7 @@ export const marketAbi = {
         payable: false,
         returnType: {
           displayName: ["ink", "MessageResult"],
-          type: 48,
+          type: 51,
         },
         selector: "0xe477ff0a",
       },
@@ -920,9 +920,51 @@ export const marketAbi = {
         payable: false,
         returnType: {
           displayName: ["ink", "MessageResult"],
-          type: 48,
+          type: 51,
         },
         selector: "0x46ab9868",
+      },
+      {
+        args: [
+          {
+            label: "user_address",
+            type: {
+              displayName: ["AccountId"],
+              type: 3,
+            },
+          },
+        ],
+        default: false,
+        docs: [],
+        label: "get_user_stores",
+        mutates: false,
+        payable: false,
+        returnType: {
+          displayName: ["ink", "MessageResult"],
+          type: 53,
+        },
+        selector: "0x1963b666",
+      },
+      {
+        args: [
+          {
+            label: "user_id",
+            type: {
+              displayName: ["u64"],
+              type: 0,
+            },
+          },
+        ],
+        default: false,
+        docs: [],
+        label: "get_user_by_id",
+        mutates: false,
+        payable: false,
+        returnType: {
+          displayName: ["ink", "MessageResult"],
+          type: 43,
+        },
+        selector: "0xa50a269c",
       },
     ],
   },
@@ -1029,12 +1071,21 @@ export const marketAbi = {
                           },
                           name: "account_type",
                         },
+                        {
+                          layout: {
+                            leaf: {
+                              key: "0x60a82dc1",
+                              ty: 3,
+                            },
+                          },
+                          name: "authority",
+                        },
                       ],
                       name: "User",
                     },
                   },
                   root_key: "0x60a82dc1",
-                  ty: 3,
+                  ty: 6,
                 },
               },
               name: "users",
@@ -1450,12 +1501,27 @@ export const marketAbi = {
               },
               name: "TIME_TO_LOCK",
             },
+            {
+              layout: {
+                root: {
+                  layout: {
+                    leaf: {
+                      key: "0x6e95f687",
+                      ty: 3,
+                    },
+                  },
+                  root_key: "0x6e95f687",
+                  ty: 34,
+                },
+              },
+              name: "user_ids",
+            },
           ],
           name: "Marketplace",
         },
       },
       root_key: "0x00000000",
-      ty: 34,
+      ty: 37,
     },
   },
   types: [
@@ -1487,12 +1553,47 @@ export const marketAbi = {
       id: 3,
       type: {
         def: {
+          composite: {
+            fields: [
+              {
+                type: 4,
+                typeName: "[u8; 32]",
+              },
+            ],
+          },
+        },
+        path: ["ink_primitives", "types", "AccountId"],
+      },
+    },
+    {
+      id: 4,
+      type: {
+        def: {
+          array: {
+            len: 32,
+            type: 5,
+          },
+        },
+      },
+    },
+    {
+      id: 5,
+      type: {
+        def: {
+          primitive: "u8",
+        },
+      },
+    },
+    {
+      id: 6,
+      type: {
+        def: {
           composite: {},
         },
         params: [
           {
             name: "K",
-            type: 4,
+            type: 3,
           },
           {
             name: "V",
@@ -1504,41 +1605,6 @@ export const marketAbi = {
           },
         ],
         path: ["ink_storage", "lazy", "mapping", "Mapping"],
-      },
-    },
-    {
-      id: 4,
-      type: {
-        def: {
-          composite: {
-            fields: [
-              {
-                type: 5,
-                typeName: "[u8; 32]",
-              },
-            ],
-          },
-        },
-        path: ["ink_primitives", "types", "AccountId"],
-      },
-    },
-    {
-      id: 5,
-      type: {
-        def: {
-          array: {
-            len: 32,
-            type: 6,
-          },
-        },
-      },
-    },
-    {
-      id: 6,
-      type: {
-        def: {
-          primitive: "u8",
-        },
       },
     },
     {
@@ -1581,6 +1647,11 @@ export const marketAbi = {
                 name: "account_type",
                 type: 9,
                 typeName: "AccountType",
+              },
+              {
+                name: "authority",
+                type: 3,
+                typeName: "AccountId",
               },
             ],
           },
@@ -1998,7 +2069,7 @@ export const marketAbi = {
         params: [
           {
             name: "K",
-            type: 4,
+            type: 3,
           },
           {
             name: "V",
@@ -2073,7 +2144,7 @@ export const marketAbi = {
       id: 30,
       type: {
         def: {
-          tuple: [4, 0],
+          tuple: [3, 0],
         },
       },
     },
@@ -2152,11 +2223,68 @@ export const marketAbi = {
       id: 34,
       type: {
         def: {
+          composite: {},
+        },
+        params: [
+          {
+            name: "K",
+            type: 0,
+          },
+          {
+            name: "V",
+            type: 3,
+          },
+          {
+            name: "KeyType",
+            type: 35,
+          },
+        ],
+        path: ["ink_storage", "lazy", "mapping", "Mapping"],
+      },
+    },
+    {
+      id: 35,
+      type: {
+        def: {
+          composite: {},
+        },
+        params: [
+          {
+            name: "L",
+            type: 11,
+          },
+          {
+            name: "R",
+            type: 36,
+          },
+        ],
+        path: ["ink_storage_traits", "impls", "ResolverKey"],
+      },
+    },
+    {
+      id: 36,
+      type: {
+        def: {
+          composite: {},
+        },
+        params: [
+          {
+            name: "ParentKey",
+            type: 13,
+          },
+        ],
+        path: ["ink_storage_traits", "impls", "ManualKey"],
+      },
+    },
+    {
+      id: 37,
+      type: {
+        def: {
           composite: {
             fields: [
               {
                 name: "users",
-                type: 3,
+                type: 6,
                 typeName:
                   "<Mapping<AccountId, User> as::ink::storage::traits::\nAutoStorableHint<::ink::storage::traits::ManualKey<3240994912u32,\n()>,>>::Type",
               },
@@ -2214,106 +2342,16 @@ export const marketAbi = {
                 typeName:
                   "<u64 as::ink::storage::traits::AutoStorableHint<::ink::storage\n::traits::ManualKey<1727207882u32, ()>,>>::Type",
               },
+              {
+                name: "user_ids",
+                type: 34,
+                typeName:
+                  "<Mapping<u64, AccountId> as::ink::storage::traits::\nAutoStorableHint<::ink::storage::traits::ManualKey<2281084270u32,\n()>,>>::Type",
+              },
             ],
           },
         },
         path: ["marketplace", "marketplace", "Marketplace"],
-      },
-    },
-    {
-      id: 35,
-      type: {
-        def: {
-          variant: {
-            variants: [
-              {
-                fields: [
-                  {
-                    type: 13,
-                  },
-                ],
-                index: 0,
-                name: "Ok",
-              },
-              {
-                fields: [
-                  {
-                    type: 36,
-                  },
-                ],
-                index: 1,
-                name: "Err",
-              },
-            ],
-          },
-        },
-        params: [
-          {
-            name: "T",
-            type: 13,
-          },
-          {
-            name: "E",
-            type: 36,
-          },
-        ],
-        path: ["Result"],
-      },
-    },
-    {
-      id: 36,
-      type: {
-        def: {
-          variant: {
-            variants: [
-              {
-                index: 1,
-                name: "CouldNotReadInput",
-              },
-            ],
-          },
-        },
-        path: ["ink_primitives", "LangError"],
-      },
-    },
-    {
-      id: 37,
-      type: {
-        def: {
-          variant: {
-            variants: [
-              {
-                fields: [
-                  {
-                    type: 38,
-                  },
-                ],
-                index: 0,
-                name: "Ok",
-              },
-              {
-                fields: [
-                  {
-                    type: 36,
-                  },
-                ],
-                index: 1,
-                name: "Err",
-              },
-            ],
-          },
-        },
-        params: [
-          {
-            name: "T",
-            type: 38,
-          },
-          {
-            name: "E",
-            type: 36,
-          },
-        ],
-        path: ["Result"],
       },
     },
     {
@@ -2363,6 +2401,102 @@ export const marketAbi = {
           variant: {
             variants: [
               {
+                index: 1,
+                name: "CouldNotReadInput",
+              },
+            ],
+          },
+        },
+        path: ["ink_primitives", "LangError"],
+      },
+    },
+    {
+      id: 40,
+      type: {
+        def: {
+          variant: {
+            variants: [
+              {
+                fields: [
+                  {
+                    type: 41,
+                  },
+                ],
+                index: 0,
+                name: "Ok",
+              },
+              {
+                fields: [
+                  {
+                    type: 39,
+                  },
+                ],
+                index: 1,
+                name: "Err",
+              },
+            ],
+          },
+        },
+        params: [
+          {
+            name: "T",
+            type: 41,
+          },
+          {
+            name: "E",
+            type: 39,
+          },
+        ],
+        path: ["Result"],
+      },
+    },
+    {
+      id: 41,
+      type: {
+        def: {
+          variant: {
+            variants: [
+              {
+                fields: [
+                  {
+                    type: 13,
+                  },
+                ],
+                index: 0,
+                name: "Ok",
+              },
+              {
+                fields: [
+                  {
+                    type: 42,
+                  },
+                ],
+                index: 1,
+                name: "Err",
+              },
+            ],
+          },
+        },
+        params: [
+          {
+            name: "T",
+            type: 13,
+          },
+          {
+            name: "E",
+            type: 42,
+          },
+        ],
+        path: ["Result"],
+      },
+    },
+    {
+      id: 42,
+      type: {
+        def: {
+          variant: {
+            variants: [
+              {
                 index: 0,
                 name: "UserAlreadyExists",
               },
@@ -2405,7 +2539,7 @@ export const marketAbi = {
       },
     },
     {
-      id: 40,
+      id: 43,
       type: {
         def: {
           variant: {
@@ -2413,7 +2547,7 @@ export const marketAbi = {
               {
                 fields: [
                   {
-                    type: 41,
+                    type: 44,
                   },
                 ],
                 index: 0,
@@ -2422,7 +2556,7 @@ export const marketAbi = {
               {
                 fields: [
                   {
-                    type: 36,
+                    type: 39,
                   },
                 ],
                 index: 1,
@@ -2434,18 +2568,18 @@ export const marketAbi = {
         params: [
           {
             name: "T",
-            type: 41,
+            type: 44,
           },
           {
             name: "E",
-            type: 36,
+            type: 39,
           },
         ],
         path: ["Result"],
       },
     },
     {
-      id: 41,
+      id: 44,
       type: {
         def: {
           variant: {
@@ -2476,7 +2610,7 @@ export const marketAbi = {
       },
     },
     {
-      id: 42,
+      id: 45,
       type: {
         def: {
           variant: {
@@ -2484,7 +2618,7 @@ export const marketAbi = {
               {
                 fields: [
                   {
-                    type: 43,
+                    type: 46,
                   },
                 ],
                 index: 0,
@@ -2493,7 +2627,7 @@ export const marketAbi = {
               {
                 fields: [
                   {
-                    type: 36,
+                    type: 39,
                   },
                 ],
                 index: 1,
@@ -2505,18 +2639,18 @@ export const marketAbi = {
         params: [
           {
             name: "T",
-            type: 43,
+            type: 46,
           },
           {
             name: "E",
-            type: 36,
+            type: 39,
           },
         ],
         path: ["Result"],
       },
     },
     {
-      id: 43,
+      id: 46,
       type: {
         def: {
           variant: {
@@ -2547,7 +2681,7 @@ export const marketAbi = {
       },
     },
     {
-      id: 44,
+      id: 47,
       type: {
         def: {
           variant: {
@@ -2555,7 +2689,7 @@ export const marketAbi = {
               {
                 fields: [
                   {
-                    type: 45,
+                    type: 48,
                   },
                 ],
                 index: 0,
@@ -2564,7 +2698,7 @@ export const marketAbi = {
               {
                 fields: [
                   {
-                    type: 36,
+                    type: 39,
                   },
                 ],
                 index: 1,
@@ -2576,18 +2710,18 @@ export const marketAbi = {
         params: [
           {
             name: "T",
-            type: 45,
+            type: 48,
           },
           {
             name: "E",
-            type: 36,
+            type: 39,
           },
         ],
         path: ["Result"],
       },
     },
     {
-      id: 45,
+      id: 48,
       type: {
         def: {
           variant: {
@@ -2618,7 +2752,7 @@ export const marketAbi = {
       },
     },
     {
-      id: 46,
+      id: 49,
       type: {
         def: {
           variant: {
@@ -2626,7 +2760,7 @@ export const marketAbi = {
               {
                 fields: [
                   {
-                    type: 47,
+                    type: 50,
                   },
                 ],
                 index: 0,
@@ -2635,7 +2769,7 @@ export const marketAbi = {
               {
                 fields: [
                   {
-                    type: 36,
+                    type: 39,
                   },
                 ],
                 index: 1,
@@ -2647,18 +2781,18 @@ export const marketAbi = {
         params: [
           {
             name: "T",
-            type: 47,
+            type: 50,
           },
           {
             name: "E",
-            type: 36,
+            type: 39,
           },
         ],
         path: ["Result"],
       },
     },
     {
-      id: 47,
+      id: 50,
       type: {
         def: {
           sequence: {
@@ -2668,7 +2802,7 @@ export const marketAbi = {
       },
     },
     {
-      id: 48,
+      id: 51,
       type: {
         def: {
           variant: {
@@ -2676,7 +2810,7 @@ export const marketAbi = {
               {
                 fields: [
                   {
-                    type: 49,
+                    type: 52,
                   },
                 ],
                 index: 0,
@@ -2685,7 +2819,7 @@ export const marketAbi = {
               {
                 fields: [
                   {
-                    type: 36,
+                    type: 39,
                   },
                 ],
                 index: 1,
@@ -2697,18 +2831,18 @@ export const marketAbi = {
         params: [
           {
             name: "T",
-            type: 49,
+            type: 52,
           },
           {
             name: "E",
-            type: 36,
+            type: 39,
           },
         ],
         path: ["Result"],
       },
     },
     {
-      id: 49,
+      id: 52,
       type: {
         def: {
           sequence: {
@@ -2718,7 +2852,57 @@ export const marketAbi = {
       },
     },
     {
-      id: 50,
+      id: 53,
+      type: {
+        def: {
+          variant: {
+            variants: [
+              {
+                fields: [
+                  {
+                    type: 54,
+                  },
+                ],
+                index: 0,
+                name: "Ok",
+              },
+              {
+                fields: [
+                  {
+                    type: 39,
+                  },
+                ],
+                index: 1,
+                name: "Err",
+              },
+            ],
+          },
+        },
+        params: [
+          {
+            name: "T",
+            type: 54,
+          },
+          {
+            name: "E",
+            type: 39,
+          },
+        ],
+        path: ["Result"],
+      },
+    },
+    {
+      id: 54,
+      type: {
+        def: {
+          sequence: {
+            type: 31,
+          },
+        },
+      },
+    },
+    {
+      id: 55,
       type: {
         def: {
           primitive: "u128",
@@ -2726,13 +2910,13 @@ export const marketAbi = {
       },
     },
     {
-      id: 51,
+      id: 56,
       type: {
         def: {
           composite: {
             fields: [
               {
-                type: 5,
+                type: 4,
                 typeName: "[u8; 32]",
               },
             ],
@@ -2742,7 +2926,7 @@ export const marketAbi = {
       },
     },
     {
-      id: 52,
+      id: 57,
       type: {
         def: {
           primitive: "u32",
@@ -2750,7 +2934,7 @@ export const marketAbi = {
       },
     },
     {
-      id: 53,
+      id: 58,
       type: {
         def: {
           variant: {},

@@ -9,54 +9,20 @@ import {
   Location,
   Store,
 } from "@/types";
-import {
-  appMetaData,
-  chainInfo,
-  DEBUG,
-  LOCATION_DECIMALS,
-  USER_COUNTER_PUBKEY,
-  USER_TAG,
-} from "@/utils/constants";
+import { LOCATION_DECIMALS } from "@/utils/constants";
 import { useStoreStore } from "./store";
-import { findProgramAddressSync } from "@project-serum/anchor/dist/cjs/utils/pubkey";
-import { utf8 } from "@project-serum/anchor/dist/cjs/utils/bytes";
-import { useAnchorWallet, useWallet } from "solana-wallets-vue";
-import {
-  clusterApiUrl,
-  Connection,
-  PublicKey,
-  SystemProgram,
-} from "@solana/web3.js";
+import { useAnchorWallet } from "solana-wallets-vue";
+import { Connection, PublicKey } from "@solana/web3.js";
 import { AnchorProvider, Idl, Program } from "@project-serum/anchor";
 import { marketAbi } from "@/blockchain/abi";
 import { connectExtension } from "@/utils/connect_web3";
 import { BN, BN_ONE } from "@polkadot/util";
 import type { WeightV2 } from "@polkadot/types/interfaces";
 
-import { toast } from "vue-sonner";
-import {
-  web3Enable,
-  web3Accounts,
-  web3FromAddress,
-  web3FromSource,
-} from "@polkadot/extension-dapp";
-import {
-  cryptoWaitReady,
-  decodeAddress,
-  signatureVerify,
-} from "@polkadot/util-crypto";
-import { u8aToHex } from "@polkadot/util";
+import { web3FromAddress } from "@polkadot/extension-dapp";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 
-import type {
-  InjectedAccountWithMeta,
-  InjectedExtension,
-} from "@polkadot/extension-inject/types";
-import { stringToHex } from "@polkadot/util";
-
 import { ContractPromise } from "@polkadot/api-contract";
-
-// The address is the actual on-chain address as ss58 or AccountId object.
 
 type UserStore = {
   accountId: string | null;
@@ -381,58 +347,98 @@ export const useUserStore = defineStore(STORE_KEY, {
     },
     async fetchUserById(userId: number) {
       try {
-        const contract = await this.getContract();
-        const userInfo = await contract.account.user.all([
+        const userStore = useUserStore();
+        const contract = await userStore.getContract();
+        const api = await userStore.polkadotApi();
+
+        const { result, output } = await contract.query.getUserById(
+          this.accountId!,
           {
-            memcmp: {
-              offset: 8 + 0,
-              bytes: ntobs58(userId),
-            },
+            gasLimit: api?.registry.createType("WeightV2", {
+              refTime: MAX_CALL_WEIGHT,
+              proofSize: PROOFSIZE,
+            }) as WeightV2,
+            storageDepositLimit,
           },
-        ]);
+          userId
+        );
+        if (result.isErr) {
+          throw new Error(result.asErr.toString());
+        }
+        const userInfo = output?.toJSON();
+        const userData = (userInfo as any)?.ok;
 
-        const user_ = userInfo[0];
-
-        const userStores = await contract.account.store.all([
-          {
-            memcmp: {
-              offset: 8 + 0,
-              bytes: user_.account.authority,
-            },
-          },
-        ]);
-
-        const user: any = {
-          id: user_.account.id.toString(),
-          username: user_.account.username,
-          phone: user_.account.phone,
-          location: [
-            user_.account.location.longitude.toString(),
-            user_.account.location.latitude.toString(),
-          ],
-          createdAt: new Date(user_.account.createdAt.toString() * 1000),
-          updatedAt: new Date(user_.account.updatedAt.toString() * 1000),
-          accountType: Object.keys(user_.account.accountType)[0],
-          userAddress: user_.account.authority.toBase58(),
-        };
-
-        user.stores = userStores.map((store: any) => {
-          return {
-            id: store.account.id.toString(),
-            name: store.account.name,
-            description: store.account.description,
-            phone: store.account.phone,
-            location: [
-              store.account.location.longitude.toString(),
-              store.account.location.latitude.toString(),
-            ],
-          };
-        });
-
-        return user;
+        userData.stores = [];
+        try {
+          const { result: storeResult, output: storeOutput } =
+            await contract.query.get_user_stores(
+              this.accountId!,
+              {
+                gasLimit: api?.registry.createType("WeightV2", {
+                  refTime: MAX_CALL_WEIGHT,
+                  proofSize: PROOFSIZE,
+                }) as WeightV2,
+                storageDepositLimit,
+              },
+              userData.authority
+            );
+        } catch (_) {}
       } catch (error) {
-        console.log({ error });
+        throw error;
       }
+      // try {
+      //   const contract = await this.getContract();
+      //   const userInfo = await contract.account.user.all([
+      //     {
+      //       memcmp: {
+      //         offset: 8 + 0,
+      //         bytes: ntobs58(userId),
+      //       },
+      //     },
+      //   ]);
+
+      //   const user_ = userInfo[0];
+
+      //   const userStores = await contract.account.store.all([
+      //     {
+      //       memcmp: {
+      //         offset: 8 + 0,
+      //         bytes: user_.account.authority,
+      //       },
+      //     },
+      //   ]);
+
+      //   const user: any = {
+      //     id: user_.account.id.toString(),
+      //     username: user_.account.username,
+      //     phone: user_.account.phone,
+      //     location: [
+      //       user_.account.location.longitude.toString(),
+      //       user_.account.location.latitude.toString(),
+      //     ],
+      //     createdAt: new Date(user_.account.createdAt.toString() * 1000),
+      //     updatedAt: new Date(user_.account.updatedAt.toString() * 1000),
+      //     accountType: Object.keys(user_.account.accountType)[0],
+      //     userAddress: user_.account.authority.toBase58(),
+      //   };
+
+      //   user.stores = userStores.map((store: any) => {
+      //     return {
+      //       id: store.account.id.toString(),
+      //       name: store.account.name,
+      //       description: store.account.description,
+      //       phone: store.account.phone,
+      //       location: [
+      //         store.account.location.longitude.toString(),
+      //         store.account.location.latitude.toString(),
+      //       ],
+      //     };
+      //   });
+
+      //   return user;
+      // } catch (error) {
+      //   console.log({ error });
+      // }
     },
 
     async polkadotApi() {
