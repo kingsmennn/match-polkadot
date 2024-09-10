@@ -1,6 +1,6 @@
 export const marketAbi = {
   source: {
-    hash: "0x46c9e1386db533dfb7b891798da1f1c19195cc7bc5b3d7aeb519e873ea56a886",
+    hash: "0xce4afff8bb819848a686e25abe95105e8982d32ea51e535645bc29cf6e6ea5d0",
     language: "ink! 5.0.0",
     compiler: "rustc 1.80.0-nightly",
     build_info: {
@@ -42,19 +42,19 @@ export const marketAbi = {
       },
       balance: {
         displayName: ["Balance"],
-        type: 48,
+        type: 50,
       },
       blockNumber: {
         displayName: ["BlockNumber"],
-        type: 50,
+        type: 52,
       },
       chainExtension: {
         displayName: ["ChainExtension"],
-        type: 51,
+        type: 53,
       },
       hash: {
         displayName: ["Hash"],
-        type: 49,
+        type: 51,
       },
       maxEventTopics: 4,
       staticBufferSize: 16384,
@@ -872,6 +872,27 @@ export const marketAbi = {
       {
         args: [
           {
+            label: "request_id",
+            type: {
+              displayName: ["u64"],
+              type: 0,
+            },
+          },
+        ],
+        default: false,
+        docs: [],
+        label: "get_offer_by_request",
+        mutates: false,
+        payable: false,
+        returnType: {
+          displayName: ["ink", "MessageResult"],
+          type: 46,
+        },
+        selector: "0xbbd2cc92",
+      },
+      {
+        args: [
+          {
             label: "user_address",
             type: {
               displayName: ["AccountId"],
@@ -886,9 +907,22 @@ export const marketAbi = {
         payable: false,
         returnType: {
           displayName: ["ink", "MessageResult"],
-          type: 46,
+          type: 48,
         },
         selector: "0xe477ff0a",
+      },
+      {
+        args: [],
+        default: false,
+        docs: [],
+        label: "get_all_requests",
+        mutates: false,
+        payable: false,
+        returnType: {
+          displayName: ["ink", "MessageResult"],
+          type: 48,
+        },
+        selector: "0x46ab9868",
       },
     ],
   },
@@ -2628,7 +2662,7 @@ export const marketAbi = {
       type: {
         def: {
           sequence: {
-            type: 17,
+            type: 23,
           },
         },
       },
@@ -2637,12 +2671,62 @@ export const marketAbi = {
       id: 48,
       type: {
         def: {
+          variant: {
+            variants: [
+              {
+                fields: [
+                  {
+                    type: 49,
+                  },
+                ],
+                index: 0,
+                name: "Ok",
+              },
+              {
+                fields: [
+                  {
+                    type: 36,
+                  },
+                ],
+                index: 1,
+                name: "Err",
+              },
+            ],
+          },
+        },
+        params: [
+          {
+            name: "T",
+            type: 49,
+          },
+          {
+            name: "E",
+            type: 36,
+          },
+        ],
+        path: ["Result"],
+      },
+    },
+    {
+      id: 49,
+      type: {
+        def: {
+          sequence: {
+            type: 17,
+          },
+        },
+      },
+    },
+    {
+      id: 50,
+      type: {
+        def: {
           primitive: "u128",
         },
       },
     },
     {
-      id: 49,
+      id: 51,
       type: {
         def: {
           composite: {
@@ -2658,7 +2742,7 @@ export const marketAbi = {
       },
     },
     {
-      id: 50,
+      id: 52,
       type: {
         def: {
           primitive: "u32",
@@ -2666,7 +2750,7 @@ export const marketAbi = {
       },
     },
     {
-      id: 51,
+      id: 53,
       type: {
         def: {
           variant: {},

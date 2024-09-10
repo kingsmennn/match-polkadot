@@ -127,7 +127,6 @@ export const useRequestsStore = defineStore("requests", {
           userStore.accountId!
         );
         if (result.isErr) {
-          console.log("error fetching user requests");
           throw new Error(result.asErr.toString());
         } else {
           const userInfo = output?.toJSON();
@@ -254,7 +253,6 @@ export const useRequestsStore = defineStore("requests", {
         );
 
         if (result.isErr) {
-          console.log("error fetching user requests");
           throw new Error(result.asErr.toString());
         } else {
           const userInfo = output?.toJSON();
@@ -483,41 +481,52 @@ export const useRequestsStore = defineStore("requests", {
       }
     },
     async fetchAllOffers(requestId: number) {
-      const env = useRuntimeConfig().public;
-
-      const userStore = useUserStore();
-
       try {
+        const userStore = useUserStore();
         const contract = await userStore.getContract();
+        const api = await userStore.polkadotApi();
 
-        const offers = await contract.account.offer.all([
+        const { result, output } = await contract.query.getOfferByRequest(
+          userStore.accountId!,
           {
-            memcmp: {
-              offset: 8 + 32 + 8,
-              bytes: ntobs58(requestId),
-            },
+            gasLimit: api?.registry.createType("WeightV2", {
+              refTime: MAX_CALL_WEIGHT,
+              proofSize: PROOFSIZE,
+            }) as WeightV2,
+            storageDepositLimit,
           },
-        ]);
+          requestId
+        );
 
-        const res: any = offers.map((offer) => {
-          const offer_: Offer = {
-            id: Number(offer.account.id),
-            offerId: Number(offer.account.id),
-            price: Number(offer.account.price),
-            images: offer.account.images,
-            requestId: offer.account.requestId,
-            storeName: offer.account.storeName,
-            sellerId: offer.account.sellerId,
-            isAccepted: offer.account.isAccepted,
-            createdAt: new Date(Number(offer.account.createdAt)),
-            updatedAt: new Date(Number(offer.account.updatedAt)),
-          };
+        if (result.isErr) {
+          throw new Error(result.asErr.toString());
+        } else {
+          const userInfo = output?.toJSON();
+          const userData = (userInfo as any)?.ok;
+          console.log(userData);
+        }
 
-          return offer_;
-        });
+        return [];
 
-        this.list = res;
-        return res;
+        // const res: any = offers.map((offer) => {
+        //   const offer_: Offer = {
+        //     id: Number(offer.account.id),
+        //     offerId: Number(offer.account.id),
+        //     price: Number(offer.account.price),
+        //     images: offer.account.images,
+        //     requestId: offer.account.requestId,
+        //     storeName: offer.account.storeName,
+        //     sellerId: offer.account.sellerId,
+        //     isAccepted: offer.account.isAccepted,
+        //     createdAt: new Date(Number(offer.account.createdAt)),
+        //     updatedAt: new Date(Number(offer.account.updatedAt)),
+        //   };
+
+        //   return offer_;
+        // });
+
+        // this.list = res;
+        // return res;
       } catch (error) {
         console.log({ error });
         throw error;
