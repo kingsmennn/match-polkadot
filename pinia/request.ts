@@ -70,38 +70,38 @@ export const useRequestsStore = defineStore("requests", {
         const api = await userStore.polkadotApi();
         const contract = await userStore.getContract();
 
-        // const { gasRequired } = await contract.query.createUser(
-        //   userStore.accountId!,
-        //   {
-        //     gasLimit: api?.registry.createType("WeightV2", {
-        //       refTime: MAX_CALL_WEIGHT,
-        //       proofSize: PROOFSIZE,
-        //     }) as WeightV2,
-        //     storageDepositLimit,
-        //   },
-        //   name,
-        //   description,
-        //   [...images],
-        //   new BN(Math.trunc(latitude).toString()),
-        //   new BN(Math.trunc(longitude).toString())
-        // );
+        const { gasRequired } = await contract.query.createRequest(
+          userStore.accountId!,
+          {
+            gasLimit: api?.registry.createType("WeightV2", {
+              refTime: MAX_CALL_WEIGHT,
+              proofSize: PROOFSIZE,
+            }) as WeightV2,
+            storageDepositLimit,
+          },
+          name,
+          description,
+          [...images],
+          new BN(Math.trunc(latitude).toString()),
+          new BN(Math.trunc(longitude).toString())
+        );
 
-        // const result = await contract.tx
-        //   .createUser(
-        //     {
-        //       gasLimit: api?.registry.createType(
-        //         "WeightV2",
-        //         gasRequired
-        //       ) as WeightV2,
-        //       storageDepositLimit,
-        //     },
-        //     name,
-        //     description,
-        //     [...images],
-        //     new BN(Math.trunc(latitude).toString()),
-        //     new BN(Math.trunc(longitude).toString())
-        //   )
-        //   .signAndSend(userStore.accountId!, { signer: injector.signer });
+        const result = await contract.tx
+          .createRequest(
+            {
+              gasLimit: api?.registry.createType(
+                "WeightV2",
+                gasRequired
+              ) as WeightV2,
+              storageDepositLimit,
+            },
+            name,
+            description,
+            [...images],
+            new BN(Math.trunc(latitude).toString()),
+            new BN(Math.trunc(longitude).toString())
+          )
+          .signAndSend(userStore.accountId!, { signer: injector.signer });
 
         return result;
       } catch (error) {
