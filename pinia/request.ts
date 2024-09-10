@@ -8,7 +8,13 @@ import {
   RequestResponse,
 } from "@/types";
 
-import { programID, useUserStore } from "./user";
+import {
+  MAX_CALL_WEIGHT,
+  programID,
+  PROOFSIZE,
+  storageDepositLimit,
+  useUserStore,
+} from "./user";
 import {
   OFFER_COUNTER_PUBKEY,
   OFFER_TAG,
@@ -24,6 +30,13 @@ import { PublicKey, SystemProgram } from "@solana/web3.js";
 import { BN, utils } from "@project-serum/anchor";
 import { off } from "process";
 import { ntobs58 } from "@/utils/nb58";
+import {
+  web3Enable,
+  web3Accounts,
+  web3FromAddress,
+  web3FromSource,
+} from "@polkadot/extension-dapp";
+import type { WeightV2 } from "@polkadot/types/interfaces";
 
 type RequestsStoreType = {
   list: RequestResponse[];
@@ -51,48 +64,47 @@ export const useRequestsStore = defineStore("requests", {
       longitude,
     }: CreateRequestDTO): Promise<any | undefined> {
       const userStore = useUserStore();
-      const { publicKey } = useWallet();
 
       try {
+        const injector = await web3FromAddress(userStore.accountId!);
+        const api = await userStore.polkadotApi();
         const contract = await userStore.getContract();
-
-        const [profilePda, _] = findProgramAddressSync(
-          [utf8.encode(USER_TAG), publicKey.value!.toBuffer()],
-          programID
+        const { gasRequired } = await contract.query.createUser(
+          userStore.accountId!,
+          {
+            gasLimit: api?.registry.createType("WeightV2", {
+              refTime: MAX_CALL_WEIGHT,
+              proofSize: PROOFSIZE,
+            }) as WeightV2,
+            storageDepositLimit,
+          },
+          name,
+          description,
+          [...images],
+          new BN(Math.trunc(latitude).toString()),
+          new BN(Math.trunc(longitude).toString())
         );
 
-        const requestCounter = await contract.account.counter.fetch(
-          REQUEST_COUNTER_PUBKEY
-        );
-
-        const [requestPda] = findProgramAddressSync(
-          [
-            utf8.encode(REQUEST_TAG),
-            publicKey.value!.toBuffer(),
-            Buffer.from(requestCounter.current.toArray("le", 8)),
-          ],
-          programID
-        );
-
-        const receipt = await contract.methods
-          .createRequest(
+        await contract.tx
+          .createUser(
+            {
+              gasLimit: api?.registry.createType(
+                "WeightV2",
+                gasRequired
+              ) as WeightV2,
+              storageDepositLimit,
+            },
             name,
             description,
             [...images],
             new BN(Math.trunc(latitude).toString()),
             new BN(Math.trunc(longitude).toString())
           )
-          .accounts({
-            user: profilePda,
-            systemProgram: SystemProgram.programId,
-            requestCounter: REQUEST_COUNTER_PUBKEY,
-            authority: publicKey.value!,
-            request: requestPda,
-          })
-          .rpc();
-        return receipt;
+          .signAndSend(userStore.accountId!, { signer: injector.signer });
+
+        return "done";
       } catch (error) {
-        console.error(error);
+        console.error("Error creating user:", error);
         throw error;
       }
     },
