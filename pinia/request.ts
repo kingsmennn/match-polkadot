@@ -372,57 +372,44 @@ export const useRequestsStore = defineStore("requests", {
       storeName,
     }: CreateOfferDTO): Promise<any | undefined> {
       const userStore = useUserStore();
-      const { publicKey } = useWallet();
-      const env = useRuntimeConfig().public;
 
       try {
+        const injector = await web3FromAddress(userStore.accountId!);
+        const api = await userStore.polkadotApi();
         const contract = await userStore.getContract();
-        const [profilePda, _] = findProgramAddressSync(
-          [utf8.encode(USER_TAG), publicKey.value!.toBuffer()],
-          programID
-        );
 
-        const offerCounter = await contract.account.counter.fetch(
-          OFFER_COUNTER_PUBKEY
-        );
-
-        const requestMade = await contract.account.request.all([
+        const { gasRequired } = await contract.query.createOffer(
+          userStore.accountId!,
           {
-            memcmp: {
-              offset: 8 + 32,
-              bytes: ntobs58(requestId),
-            },
+            gasLimit: api?.registry.createType("WeightV2", {
+              refTime: MAX_CALL_WEIGHT,
+              proofSize: PROOFSIZE,
+            }) as WeightV2,
+            storageDepositLimit,
           },
-        ]);
-
-        const request = requestMade[0];
-
-        const [offerPda] = findProgramAddressSync(
-          [
-            utf8.encode(OFFER_TAG),
-            publicKey.value!.toBuffer(),
-            Buffer.from(offerCounter.current.toArray("le", 8)),
-          ],
-          programID
+          requestId,
+          price,
+          [...images],
+          storeName
         );
 
-        const receipt = await contract.methods
+        const result = await contract.tx
           .createOffer(
-            new BN(Math.trunc(price).toString()),
+            {
+              gasLimit: api?.registry.createType(
+                "WeightV2",
+                gasRequired
+              ) as WeightV2,
+              storageDepositLimit,
+            },
+            requestId,
+            price,
             [...images],
             storeName
           )
-          .accounts({
-            user: profilePda,
-            systemProgram: SystemProgram.programId,
-            offerCounter: OFFER_COUNTER_PUBKEY,
-            authority: publicKey.value!,
-            request: request.publicKey,
-            offer: offerPda,
-          })
-          .rpc();
+          .signAndSend(userStore.accountId!, { signer: injector.signer });
 
-        return receipt;
+        return result;
       } catch (error) {
         console.error(error);
         throw error;
