@@ -177,21 +177,24 @@ export const useUserStore = defineStore(STORE_KEY, {
         if (result.isErr) {
           throw new Error(result.asErr.toString());
         } else {
-          const userInfo = output?.toHuman();
-          console.log(userInfo);
-          // const results = [
-          //   Number(userData.id),
-          //   userData.username,
-          //   userData.phone,
-          //   [
-          //     Number(userData.location.longitude),
-          //     Number(userData.location.latitude),
-          //   ],
-          //   Number(userData.createdAt),
-          //   Number(userData.updatedAt),
-          //   Number(accountType === AccountType.BUYER ? 0 : 1),
-          // ];
-          // return results;
+          const userInfo = output?.toJSON();
+          const userData = (userInfo as any)?.ok;
+
+          const results = [
+            Number(userData.id),
+            userData.username,
+            userData.phone,
+            [
+              Number(userData.location.longitude),
+              Number(userData.location.latitude),
+            ],
+            Number(userData.createdAt),
+            Number(userData.updatedAt),
+            Number(
+              userData.accountType.toLowerCase() === AccountType.BUYER ? 0 : 1
+            ),
+          ];
+          return results;
         }
       } catch (error) {
         console.log({ error });
