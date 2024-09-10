@@ -147,7 +147,7 @@ export const useUserStore = defineStore(STORE_KEY, {
           this.storeDetails = res || [];
         }
       } catch (error) {
-        console.error("Failed to connect to Solana Wallet:", error);
+        console.error("Failed to connect to Wallet:", error);
       }
     },
     async getContract() {
