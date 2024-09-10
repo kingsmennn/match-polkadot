@@ -113,51 +113,59 @@ export const useRequestsStore = defineStore("requests", {
       try {
         const userStore = useUserStore();
         const contract = await userStore.getContract();
+        const api = await userStore.polkadotApi();
 
-        const userRequests = await contract.account.request.all([
+        const { result, output } = await contract.query.getUserRequests(
+          userStore.accountId!,
           {
-            memcmp: {
-              offset: 8 + 0,
-              bytes: accountId,
-            },
+            gasLimit: api?.registry.createType("WeightV2", {
+              refTime: MAX_CALL_WEIGHT,
+              proofSize: PROOFSIZE,
+            }) as WeightV2,
+            storageDepositLimit,
           },
-        ]);
+          userStore.accountId!
+        );
+        if (result.isErr) {
+          console.log("error fetching user requests");
+          throw new Error(result.asErr.toString());
+        } else {
+          const userInfo = output?.toJSON();
+          const userData = (userInfo as any)?.ok;
 
-        const res: any = userRequests.map((request) => {
-          console.log(request.account.lifecycle);
-          const lifecycle_ = Object.keys(
-            request.account.lifecycle
-          )[0].toUpperCase();
+          const res: any = userData.map((request: any) => {
+            const lifecycle_ = request.lifecycle.toUpperCase();
 
-          let lifecycle: RequestLifecycleIndex = RequestLifecycleIndex.PENDING;
+            let lifecycle: RequestLifecycleIndex =
+              RequestLifecycleIndex.PENDING;
 
-          Object.entries(RequestLifecycleIndex).forEach(([key, value]) => {
-            if (key.replaceAll("_", "") === lifecycle_) {
-              lifecycle = value as RequestLifecycleIndex;
-            }
+            Object.entries(RequestLifecycleIndex).forEach(([key, value]) => {
+              if (key.replaceAll("_", "") === lifecycle_) {
+                lifecycle = value as RequestLifecycleIndex;
+              }
+            });
+
+            return {
+              requestId: Number(request.id),
+              requestName: request.name,
+              buyerId: Number(request.buyerId),
+              sellersPriceQuote: Number(request.sellersPriceQuote),
+              lockedSellerId: Number(request.lockedSellerId),
+              description: request.description,
+              lifecycle,
+              longitude: Number(request.location.longitude.toString()),
+              latitude: Number(request.location.latitude.toString()),
+              createdAt: Number(request.createdAt.toString()),
+              updatedAt: Number(request.updatedAt.toString()),
+              images: request.images,
+            };
           });
 
-          console.log({ lifecycle });
-          console.log({ lifecycle_ });
+          console.log({ res });
 
-          return {
-            requestId: Number(request.account.id),
-            requestName: request.account.name,
-            buyerId: Number(request.account.buyerId),
-            sellersPriceQuote: Number(request.account.sellersPriceQuote),
-            lockedSellerId: Number(request.account.lockedSellerId),
-            description: request.account.description,
-            lifecycle,
-            longitude: Number(request.account.location.longitude.toString()),
-            latitude: Number(request.account.location.latitude.toString()),
-            createdAt: Number(request.account.createdAt.toString()),
-            updatedAt: Number(request.account.updatedAt.toString()),
-            images: request.account.images,
-          };
-        });
-
-        this.list = res;
-        return res;
+          this.list = res;
+          return res;
+        }
       } catch (error) {
         console.log({ error });
         throw error;
@@ -228,50 +236,55 @@ export const useRequestsStore = defineStore("requests", {
       }
     },
     async getRequest(requestId: number) {
-      const userStore = useUserStore();
-
       try {
+        const userStore = useUserStore();
         const contract = await userStore.getContract();
+        const api = await userStore.polkadotApi();
 
-        const requests = await contract.account.request.all([
+        const { result, output } = await contract.query.getRequest(
+          userStore.accountId!,
           {
-            memcmp: {
-              offset: 8 + 32,
-              bytes: ntobs58(requestId),
-            },
+            gasLimit: api?.registry.createType("WeightV2", {
+              refTime: MAX_CALL_WEIGHT,
+              proofSize: PROOFSIZE,
+            }) as WeightV2,
+            storageDepositLimit,
           },
-        ]);
+          requestId
+        );
 
-        const request_ = requests[0];
+        if (result.isErr) {
+          console.log("error fetching user requests");
+          throw new Error(result.asErr.toString());
+        } else {
+          const userInfo = output?.toJSON();
+          const userData = (userInfo as any)?.ok;
 
-        const lifecycle_ = Object.keys(
-          request_.account.lifecycle
-        )[0].toUpperCase();
+          const lifecycle_ = userData.lifecycle.toUpperCase();
 
-        let lifecycle: RequestLifecycleIndex = RequestLifecycleIndex.PENDING;
+          let lifecycle: RequestLifecycleIndex = RequestLifecycleIndex.PENDING;
 
-        Object.entries(RequestLifecycleIndex).forEach(([key, value]) => {
-          if (key.replaceAll("_", "") === lifecycle_) {
-            lifecycle = value as RequestLifecycleIndex;
-          }
-        });
+          Object.entries(RequestLifecycleIndex).forEach(([key, value]) => {
+            if (key.replaceAll("_", "") === lifecycle_) {
+              lifecycle = value as RequestLifecycleIndex;
+            }
+          });
 
-        const request: RequestResponse = {
-          requestId: Number(request_.account.id),
-          requestName: request_.account.name,
-          buyerId: Number(request_.account.buyerId),
-          sellersPriceQuote: Number(request_.account.sellersPriceQuote),
-          lockedSellerId: Number(request_.account.lockedSellerId),
-          description: request_.account.description,
-          lifecycle,
-          longitude: Number(request_.account.location.longitude.toString()),
-          latitude: Number(request_.account.location.latitude.toString()),
-          createdAt: Number(request_.account.createdAt.toString()),
-          updatedAt: Number(request_.account.updatedAt.toString()),
-          images: request_.account.images,
-        };
-
-        return request;
+          return {
+            requestId: Number(userData.id),
+            requestName: userData.name,
+            buyerId: Number(userData.buyerId),
+            sellersPriceQuote: Number(userData.sellersPriceQuote),
+            lockedSellerId: Number(userData.lockedSellerId),
+            description: userData.description,
+            lifecycle,
+            longitude: Number(userData.location.longitude.toString()),
+            latitude: Number(userData.location.latitude.toString()),
+            createdAt: Number(userData.createdAt.toString()),
+            updatedAt: Number(userData.updatedAt.toString()),
+            images: userData.images,
+          };
+        }
       } catch (error) {
         console.log(error);
         throw error;
