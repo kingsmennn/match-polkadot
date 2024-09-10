@@ -118,6 +118,7 @@ export const useUserStore = defineStore(STORE_KEY, {
   },
   actions: {
     async setUpPolkadotConnectEvents() {
+      this.connectToPolkadot();
       // const { publicKey, wallet } = useWallet();
       // const walletAdapter = wallet.value!.adapter;
       // walletAdapter.on("connect", (newPublicKey) => {
@@ -254,9 +255,8 @@ export const useUserStore = defineStore(STORE_KEY, {
       long,
       account_type,
     }: CreateUserDTO): Promise<string | undefined> {
-      const contract = await this.getContract();
-
       try {
+        const contract = await this.getContract();
         const injector = await web3FromAddress(this.accountId!);
         const api = await this.polkadotApi();
         const { gasRequired } = await contract.query.createUser(
@@ -380,8 +380,8 @@ export const useUserStore = defineStore(STORE_KEY, {
       }
     },
     async fetchUserById(userId: number) {
-      const contract = await this.getContract();
       try {
+        const contract = await this.getContract();
         const userInfo = await contract.account.user.all([
           {
             memcmp: {
