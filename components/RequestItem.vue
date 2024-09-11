@@ -49,6 +49,25 @@
                   </p>
                 </template>
               </template>
+
+              <template v-if="lifecycle === RequestLifecycleIndex.PENDING">
+                <div class="tw-block max-md:tw-hidden md:tw-h-12 tw-invisible">artificial spacer</div>
+                <button
+                  v-if="lifecycle === RequestLifecycleIndex.PENDING"
+                  class="tw-absolute tw-z-10 tw-bottom-2 tw-right-2 tw-inline-block tw-p-2 tw-px-4 tw-rounded-full tw-bg-red-700 md:tw-bg-black
+                  tw-select-none tw-text-white hover:tw-bg-red-700
+                  tw-transition-all tw-duration-300 tw-font-medium">
+                  Revert
+                </button>
+              </template>
+              
+              <button
+                v-if="hasLocked && lifecycle === RequestLifecycleIndex.ACCEPTED_BY_BUYER"
+                class="tw-inline-block tw-p-2 tw-px-4 mt-2 tw-rounded-full tw-bg-black
+                tw-select-none tw-text-white hover:tw-bg-black/80
+                tw-transition-all tw-duration-300 tw-font-medium">
+                Mark as completed
+              </button>
             </div>
           </div>
           <span class="tw-text-sm">{{ timeAgo }}</span>
