@@ -1,6 +1,6 @@
 export const marketAbi = {
   source: {
-    hash: "0x7394c09b4f325dca0068a50c291fc30bb780b10edbe6192b082a41ea66ba9270",
+    hash: "0xb6bba62d5e6d44f231e53a7a3d21b92f76e7e8465120c45721f397926f66f5d3",
     language: "ink! 5.0.0",
     compiler: "rustc 1.80.0-nightly",
     build_info: {
@@ -966,6 +966,27 @@ export const marketAbi = {
         },
         selector: "0xa50a269c",
       },
+      {
+        args: [
+          {
+            label: "seller_address",
+            type: {
+              displayName: ["AccountId"],
+              type: 3,
+            },
+          },
+        ],
+        default: false,
+        docs: [],
+        label: "get_seller_offers",
+        mutates: false,
+        payable: false,
+        returnType: {
+          displayName: ["ink", "MessageResult"],
+          type: 49,
+        },
+        selector: "0x985ff606",
+      },
     ],
   },
   storage: {
@@ -1350,6 +1371,15 @@ export const marketAbi = {
                             },
                           },
                           name: "updated_at",
+                        },
+                        {
+                          layout: {
+                            leaf: {
+                              key: "0xbfd58179",
+                              ty: 3,
+                            },
+                          },
+                          name: "authority",
                         },
                       ],
                       name: "Offer",
@@ -2019,6 +2049,11 @@ export const marketAbi = {
                 name: "updated_at",
                 type: 0,
                 typeName: "u64",
+              },
+              {
+                name: "authority",
+                type: 3,
+                typeName: "AccountId",
               },
             ],
           },
