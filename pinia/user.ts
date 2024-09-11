@@ -19,7 +19,10 @@ import { connectExtension } from "@/utils/connect_web3";
 import { BN, BN_ONE } from "@polkadot/util";
 import type { WeightV2 } from "@polkadot/types/interfaces";
 
-import { web3FromAddress } from "@polkadot/extension-dapp";
+import {
+  web3AccountsSubscribe,
+  web3FromAddress,
+} from "@polkadot/extension-dapp";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 
 import { ContractPromise } from "@polkadot/api-contract";
@@ -85,16 +88,13 @@ export const useUserStore = defineStore(STORE_KEY, {
   actions: {
     async setUpPolkadotConnectEvents() {
       this.connectToPolkadot();
-      // const { publicKey, wallet } = useWallet();
-      // const walletAdapter = wallet.value!.adapter;
-      // walletAdapter.on("connect", (newPublicKey) => {
-      //   this.blockchainError.userNotFound = false;
-      //   this.accountId = newPublicKey.toBase58();
-      //   this.connectToPolkadot();
-      // });
-      // walletAdapter.on("disconnect", () => {
-      //   this.disconnect();
-      // });
+      web3AccountsSubscribe((accounts) => {
+        if (accounts.length) {
+          this.blockchainError.userNotFound = false;
+          this.accountId = accounts[0].address;
+          this.connectToPolkadot();
+        }
+      });
     },
     async connectToPolkadot() {
       try {
