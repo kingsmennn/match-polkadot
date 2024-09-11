@@ -350,7 +350,7 @@ export const useUserStore = defineStore(STORE_KEY, {
         userData.stores = [];
         try {
           const { result: storeResult, output: storeOutput } =
-            await contract.query.get_user_stores(
+            await contract.query.getUserStores(
               this.accountId!,
               {
                 gasLimit: api?.registry.createType("WeightV2", {
@@ -361,63 +361,32 @@ export const useUserStore = defineStore(STORE_KEY, {
               },
               userData.authority
             );
+
+          if (result.isErr) {
+            throw new Error(result.asErr.toString());
+          }
+          const storeInfo = storeOutput?.toJSON();
+          const storeData = (storeInfo as any)?.ok;
+          userData.userAddress = userData.authority;
+          userData.stores = storeData.map((store: any) => {
+            return {
+              id: store.id.toString(),
+              name: store.name,
+              description: store.description,
+              phone: store.phone,
+              location: [
+                Number(store.location.longitude.toString()),
+                Number(store.location.latitude.toString()),
+              ],
+            };
+          });
         } catch (_) {}
+        console.log(userData);
+        return userData;
       } catch (error) {
+        console.log(error);
         throw error;
       }
-      // try {
-      //   const contract = await this.getContract();
-      //   const userInfo = await contract.account.user.all([
-      //     {
-      //       memcmp: {
-      //         offset: 8 + 0,
-      //         bytes: ntobs58(userId),
-      //       },
-      //     },
-      //   ]);
-
-      //   const user_ = userInfo[0];
-
-      //   const userStores = await contract.account.store.all([
-      //     {
-      //       memcmp: {
-      //         offset: 8 + 0,
-      //         bytes: user_.account.authority,
-      //       },
-      //     },
-      //   ]);
-
-      //   const user: any = {
-      //     id: user_.account.id.toString(),
-      //     username: user_.account.username,
-      //     phone: user_.account.phone,
-      //     location: [
-      //       user_.account.location.longitude.toString(),
-      //       user_.account.location.latitude.toString(),
-      //     ],
-      //     createdAt: new Date(user_.account.createdAt.toString() * 1000),
-      //     updatedAt: new Date(user_.account.updatedAt.toString() * 1000),
-      //     accountType: Object.keys(user_.account.accountType)[0],
-      //     userAddress: user_.account.authority.toBase58(),
-      //   };
-
-      //   user.stores = userStores.map((store: any) => {
-      //     return {
-      //       id: store.account.id.toString(),
-      //       name: store.account.name,
-      //       description: store.account.description,
-      //       phone: store.account.phone,
-      //       location: [
-      //         store.account.location.longitude.toString(),
-      //         store.account.location.latitude.toString(),
-      //       ],
-      //     };
-      //   });
-
-      //   return user;
-      // } catch (error) {
-      //   console.log({ error });
-      // }
     },
 
     async polkadotApi() {
