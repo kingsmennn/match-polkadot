@@ -209,8 +209,8 @@ export const useRequestsStore = defineStore("requests", {
               lifecycle,
               longitude: Number(requestData.location.longitude.toString()),
               latitude: Number(requestData.location.latitude.toString()),
-              createdAt: Number(requestData.createdAt.toString()),
-              updatedAt: Number(requestData.updatedAt.toString()),
+              createdAt: Number(requestData.createdAt.toString() / 1000),
+              updatedAt: Number(requestData.updatedAt.toString() / 1000),
               images: requestData.images,
             });
           }
