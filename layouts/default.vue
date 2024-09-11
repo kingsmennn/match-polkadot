@@ -131,17 +131,7 @@ const env = useRuntimeConfig().public;
 const router = useRouter();
 const route = useRoute();
 const userStore = useUserStore();
-const unwatch = watch(
-  publicKey,
-  async (val) => {
-    if (!!val) {
-      userStore.blockchainError.userNotFound = false;
-      await userStore.connectToPolkadot();
-      unwatch();
-    }
-  },
-  { immediate: true }
-);
+
 
 const userCookie = useCookie<User>(STORE_KEY_MIDDLEWARE, { watch: true });
 const storeCookie = useCookie(STORE_KEY);

@@ -148,7 +148,6 @@ import { useRequestsStore } from "@/pinia/request";
 import { TIME_TILL_LOCK } from "@/utils/constants";
 import { useUserStore } from "@/pinia/user";
 import { useStoreStore } from "@/pinia/store";
-import { AnchorError } from "@project-serum/anchor";
 import { toast } from "vue-sonner";
 
 interface Props {
@@ -240,11 +239,7 @@ watch(
       sellerStore.value = !!stores[0] ? stores[0] : undefined;
     } catch (error) {
       console.log(error);
-      if (error instanceof AnchorError) {
-        const err: AnchorError = error;
-        toast.error(err.error.errorMessage);
-        return;
-      }
+      toast.error(error);
     } finally {
       fetchingStoreDetails.value = false;
     }

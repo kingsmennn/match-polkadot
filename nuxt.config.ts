@@ -20,7 +20,7 @@ export default defineNuxtConfig({
       target: "esnext",
     },
     optimizeDeps: {
-      include: ["@project-serum/anchor", "@solana/web3.js", "buffer"],
+      include: [],
       esbuildOptions: {
         target: "esnext",
       },
