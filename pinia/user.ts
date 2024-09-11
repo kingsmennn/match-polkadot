@@ -40,6 +40,7 @@ export const MAX_CALL_WEIGHT = new BN(5_000_000_000_000).isub(BN_ONE);
 export const PROOFSIZE = new BN(1_000_000);
 
 export const storageDepositLimit = null;
+let apiInstance: ApiPromise | null = null;
 
 export const useUserStore = defineStore(STORE_KEY, {
   state: (): UserStore => ({
@@ -390,10 +391,16 @@ export const useUserStore = defineStore(STORE_KEY, {
     },
 
     async polkadotApi() {
+      if (apiInstance) {
+        console.log("Using existing API instance");
+        return apiInstance;
+      }
+
       const wsProvider = new WsProvider(env.polkadotRpcUrl);
-      return await ApiPromise.create({
+      apiInstance = await ApiPromise.create({
         provider: wsProvider,
       });
+      return apiInstance;
     },
 
     async getUserLocation() {
