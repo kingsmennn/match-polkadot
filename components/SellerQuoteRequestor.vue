@@ -189,7 +189,7 @@ const handleFormSubmit = async () => {
         hasSubmittedOffer.value ? "updated your" : "made an"
       } offer!`
     );
-  } catch (error) {
+  } catch (error: any) {
     console.log(error);
     toast.error(error);
   } finally {

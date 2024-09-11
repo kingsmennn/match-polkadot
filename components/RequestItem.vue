@@ -237,7 +237,7 @@ watch(
       const stores = await storesStore.getUserStores(res?.userAddress);
       if (!stores) return;
       sellerStore.value = !!stores[0] ? stores[0] : undefined;
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
       toast.error(error);
     } finally {
