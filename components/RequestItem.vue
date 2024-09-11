@@ -51,13 +51,14 @@
               </template>
 
               <template v-if="lifecycle === RequestLifecycleIndex.PENDING">
-                <div class="tw-block max-md:tw-hidden md:tw-h-12 tw-invisible">artificial spacer</div>
+                <div class="tw-block max-md:tw-hidden md:tw-h-12 tw-invisible">
+                  artificial spacer
+                </div>
                 <button
                   v-if="lifecycle === RequestLifecycleIndex.PENDING"
                   id="revert"
-                  class="tw-absolute tw-z-10 tw-bottom-2 tw-right-2 tw-inline-block tw-p-2 tw-px-4 tw-rounded-full tw-bg-black
-                  tw-select-none tw-text-white hover:tw-bg-black/80
-                  tw-transition-all tw-duration-300 tw-font-medium">
+                  class="tw-absolute tw-z-10 tw-bottom-2 tw-right-2 tw-inline-block tw-p-2 tw-px-4 tw-rounded-full tw-bg-black tw-select-none tw-text-white hover:tw-bg-black/80 tw-transition-all tw-duration-300 tw-font-medium"
+                >
                   <v-progress-circular
                     v-if="cancelingRequest"
                     indeterminate
@@ -66,39 +67,41 @@
                     width="2"
                   >
                   </v-progress-circular>
-                  <template v-else>
-                    Revert
-                  </template>
+                  <template v-else> Revert </template>
                 </button>
 
                 <v-menu
                   v-if="userStore.isConnected"
                   activator="#revert"
-                  transition="slide-y-transition">
+                  transition="slide-y-transition"
+                >
                   <div
-                    class="tw-bg-white tw-mt-2 tw-p-2 tw-rounded-lg tw-flex
-                    tw-flex-col tw-gap-3 tw-shadow-lg">
-                    <span class="tw-text-sm tw-border-b tw-px-3 tw-py-2 tw-pb-1.5">
+                    class="tw-bg-white tw-mt-2 tw-p-2 tw-rounded-lg tw-flex tw-flex-col tw-gap-3 tw-shadow-lg"
+                  >
+                    <span
+                      class="tw-text-sm tw-border-b tw-px-3 tw-py-2 tw-pb-1.5"
+                    >
                       Are you sure you want <br />to cancel this request?
                     </span>
-  
+
                     <button
                       @click="handleCancelRequest"
-                      class="tw-p-2 tw-px-4 tw-rounded-full tw-bg-red-600
-                      tw-select-none tw-text-white hover:tw-bg-red-600/80
-                      tw-transition-all tw-duration-300 tw-font-medium">
+                      class="tw-p-2 tw-px-4 tw-rounded-full tw-bg-red-600 tw-select-none tw-text-white hover:tw-bg-red-600/80 tw-transition-all tw-duration-300 tw-font-medium"
+                    >
                       Cancel request
                     </button>
                   </div>
                 </v-menu>
               </template>
-              
+
               <button
-                v-if="hasLocked && lifecycle === RequestLifecycleIndex.ACCEPTED_BY_BUYER"
+                v-if="
+                  hasLocked &&
+                  lifecycle === RequestLifecycleIndex.ACCEPTED_BY_BUYER
+                "
                 @click="handleMarkAsCompleted"
-                class="tw-inline-block tw-p-2 tw-px-4 mt-2 tw-rounded-full tw-bg-black
-                tw-select-none tw-text-white hover:tw-bg-black/80
-                tw-transition-all tw-duration-300 tw-font-medium">
+                class="tw-inline-block tw-p-2 tw-px-4 mt-2 tw-rounded-full tw-bg-black tw-select-none tw-text-white hover:tw-bg-black/80 tw-transition-all tw-duration-300 tw-font-medium"
+              >
                 <v-progress-circular
                   v-if="markingAsCompleted"
                   indeterminate
@@ -107,9 +110,7 @@
                   width="2"
                 >
                 </v-progress-circular>
-                <template v-else>
-                  Mark as completed
-                </template>
+                <template v-else> Mark as completed </template>
               </button>
             </div>
           </div>
@@ -238,7 +239,8 @@ const lifecycleProgress = computed<number>(() => {
     hasLocked.value &&
     props.lifecycle === RequestLifecycleIndex.ACCEPTED_BY_BUYER &&
     props.accountType === AccountType.BUYER
-  ) return 100;
+  )
+    return 100;
 
   switch (props.lifecycle) {
     case RequestLifecycleIndex.PENDING:
@@ -312,7 +314,7 @@ const markingAsCompleted = ref(false);
 const handleMarkAsCompleted = async () => {
   markingAsCompleted.value = true;
   try {
-    await requestStore.markAsCompleted(props.requestId);
+    await requestStore.markRequestAsCompleted(props.requestId);
     completed.value = true;
   } catch (error: any) {
     console.log(error);
@@ -326,7 +328,7 @@ const cancelingRequest = ref(false);
 const handleCancelRequest = async () => {
   cancelingRequest.value = true;
   try {
-    await requestStore.cancelRequest(props.requestId);
+    await requestStore.deleteRequest(props.requestId);
   } catch (error: any) {
     console.log(error);
     toast.error(error);

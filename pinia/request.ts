@@ -496,16 +496,78 @@ export const useRequestsStore = defineStore("requests", {
     },
     async markRequestAsCompleted(requestId: number) {
       try {
-        
+        const userStore = useUserStore();
+        const injector = await web3FromAddress(userStore.accountId!);
+        const api = await userStore.polkadotApi();
+        const contract = await userStore.getContract();
+
+        const { gasRequired } = await contract.query.markRequestAsCompleted(
+          userStore.accountId!,
+          {
+            gasLimit: api?.registry.createType("WeightV2", {
+              refTime: MAX_CALL_WEIGHT,
+              proofSize: PROOFSIZE,
+            }) as WeightV2,
+            storageDepositLimit,
+          },
+          requestId
+        );
+
+        const result = await contract.tx
+          .markRequestAsCompleted(
+            {
+              gasLimit: api?.registry.createType(
+                "WeightV2",
+                gasRequired
+              ) as WeightV2,
+              storageDepositLimit,
+            },
+            requestId
+          )
+          .signAndSend(userStore.accountId!, { signer: injector.signer });
+
+        return result;
       } catch (error) {
-        
+        console.error(error);
+        throw error;
       }
     },
     async deleteRequest(requestId: number) {
       try {
-        
+        const userStore = useUserStore();
+        const injector = await web3FromAddress(userStore.accountId!);
+        const api = await userStore.polkadotApi();
+        const contract = await userStore.getContract();
+
+        const { gasRequired } = await contract.query.deleteRequest(
+          userStore.accountId!,
+          {
+            gasLimit: api?.registry.createType("WeightV2", {
+              refTime: MAX_CALL_WEIGHT,
+              proofSize: PROOFSIZE,
+            }) as WeightV2,
+            storageDepositLimit,
+          },
+          requestId
+        );
+
+        const result = await contract.tx
+          .deleteRequest(
+            {
+              gasLimit: api?.registry.createType(
+                "WeightV2",
+                gasRequired
+              ) as WeightV2,
+              storageDepositLimit,
+            },
+            requestId
+          )
+          .signAndSend(userStore.accountId!, { signer: injector.signer });
+
+        return result;
       } catch (error) {
-        
+        console.error(error);
+        throw error;
       }
     },
   },
