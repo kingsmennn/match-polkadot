@@ -54,11 +54,32 @@
                 <div class="tw-block max-md:tw-hidden md:tw-h-12 tw-invisible">artificial spacer</div>
                 <button
                   v-if="lifecycle === RequestLifecycleIndex.PENDING"
-                  class="tw-absolute tw-z-10 tw-bottom-2 tw-right-2 tw-inline-block tw-p-2 tw-px-4 tw-rounded-full tw-bg-red-700 md:tw-bg-black
-                  tw-select-none tw-text-white hover:tw-bg-red-700
+                  id="revert"
+                  class="tw-absolute tw-z-10 tw-bottom-2 tw-right-2 tw-inline-block tw-p-2 tw-px-4 tw-rounded-full tw-bg-black
+                  tw-select-none tw-text-white hover:tw-bg-black/80
                   tw-transition-all tw-duration-300 tw-font-medium">
                   Revert
                 </button>
+
+                <v-menu
+                  v-if="userStore.isConnected"
+                  activator="#revert"
+                  transition="slide-y-transition">
+                  <div
+                    class="tw-bg-white tw-mt-2 tw-p-2 tw-rounded-lg tw-flex
+                    tw-flex-col tw-gap-3 tw-shadow-lg">
+                    <span class="tw-text-sm tw-border-b tw-px-3 tw-py-2 tw-pb-1.5">
+                      Are you sure you want <br />to cancel this request?
+                    </span>
+  
+                    <button
+                      class="tw-p-2 tw-px-4 tw-rounded-full tw-bg-red-600
+                      tw-select-none tw-text-white hover:tw-bg-red-600/80
+                      tw-transition-all tw-duration-300 tw-font-medium">
+                      Cancel request
+                    </button>
+                  </div>
+                </v-menu>
               </template>
               
               <button
