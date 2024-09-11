@@ -127,9 +127,6 @@ import { User, AccountType, STORE_KEY_MIDDLEWARE, STORE_KEY } from "@/types";
 import { useUserStore } from "@/pinia/user";
 import { toast, Toaster } from "vue-sonner";
 import { ellipsify } from "@/utils/ellipsify";
-import { useWallet, WalletMultiButton } from "solana-wallets-vue";
-
-const { publicKey, wallet, disconnect: solDisconnect } = useWallet();
 const env = useRuntimeConfig().public;
 const router = useRouter();
 const route = useRoute();
