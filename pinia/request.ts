@@ -148,6 +148,7 @@ export const useRequestsStore = defineStore("requests", {
       }
     },
     async fetchAllSellersRequests(accountId: string) {
+      //TODO: test this
       try {
         const userStore = useUserStore();
         const contract = await userStore.getContract();
@@ -177,7 +178,7 @@ export const useRequestsStore = defineStore("requests", {
 
         for (const offer of offers) {
           const { output: requestOutput } = await contract.query.getRequestById(
-            userStore.accountId!,
+            accountId,
             {
               gasLimit: api?.registry.createType("WeightV2", {
                 refTime: MAX_CALL_WEIGHT,
