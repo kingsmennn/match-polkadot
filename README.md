@@ -96,7 +96,7 @@ Certainly! Here's an outline for "Match" based on the categories you provided:
    CONTRACT_ID = 5CMWSyLf2tTCKiNAPN8VHBJ1egjKbvmEj2ctVKEWyYuGFz8E
    CHAIN_ID = 97
    GOOGLE_MAPS_API_KEY = AIzaSyDXXXXXIPepz_29M
-   POLKADOT_RPC_URL = https://little-intensive-patina.Polkadot-devnet.quiknode.pro/bc836XXXXXXXa7b578
+   POLKADOT_RPC_URL = wss://ws.test.azero.dev
    ```
 
 4. **Start the Development Server:**
