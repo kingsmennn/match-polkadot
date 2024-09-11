@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { CreateStoreDTO, STORE_STORE_KEY } from "@/types";
+import { CreateStoreDTO, Store, STORE_STORE_KEY } from "@/types";
 import {
   MAX_CALL_WEIGHT,
   PROOFSIZE,
@@ -82,7 +82,7 @@ export const useStoreStore = defineStore(STORE_STORE_KEY, {
         throw error;
       }
     },
-    async getUserStores(accountId: string): Promise<any[] | undefined> {
+    async getUserStores(accountId: string): Promise<Store[] | undefined> {
       try {
         const userStore = useUserStore();
         const contract = await userStore.getContract();
@@ -105,17 +105,17 @@ export const useStoreStore = defineStore(STORE_STORE_KEY, {
           const userInfo = output?.toJSON();
           const userData = (userInfo as any)?.ok;
 
-          const response: any = userData.map((store: any) => {
-            return [
-              store.id.toString(),
-              store.name,
-              store.description,
-              store.phone,
-              [
-                Number(store.location.longitude.toString()),
-                Number(store.location.latitude.toString()),
-              ],
-            ];
+          const response: Store[] = userData.map((store: any) => {
+             return {
+                id: store.id.toString(),
+                name: store.name,
+                description: store.description,
+                phone: store.phone,
+                location: [
+                  Number(store.location.longitude.toString()),
+                  Number(store.location.latitude.toString()),
+                ],
+              }
           });
 
           userStore.storeDetails = response;
