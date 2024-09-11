@@ -193,10 +193,9 @@ const hasLocked = computed(() =>
 const lifecycleProgress = computed<number>(() => {
   if (
     hasLocked.value &&
-    RequestLifecycleIndex.ACCEPTED_BY_BUYER &&
+    props.lifecycle === RequestLifecycleIndex.ACCEPTED_BY_BUYER &&
     props.accountType === AccountType.BUYER
-  )
-    return 100;
+  ) return 100;
 
   switch (props.lifecycle) {
     case RequestLifecycleIndex.PENDING:
