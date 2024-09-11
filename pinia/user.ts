@@ -362,7 +362,7 @@ export const useUserStore = defineStore(STORE_KEY, {
               userData.authority
             );
 
-          if (result.isErr) {
+          if (storeResult.isErr) {
             throw new Error(result.asErr.toString());
           }
           const storeInfo = storeOutput?.toJSON();
