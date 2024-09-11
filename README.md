@@ -93,10 +93,10 @@ Certainly! Here's an outline for "Match" based on the categories you provided:
    ```bash
    LIGHTHOUSE_API_KEY = 27XXX73.51437XXXbfac947
    MATCH_API_URL = https://finder-backend-evm.onrender.com
-   CONTRACT_ID = 89mKL8vWpyvdSimdYoZgXzMF9pb69VopCcAh1DZP41cL
+   CONTRACT_ID = 5CMWSyLf2tTCKiNAPN8VHBJ1egjKbvmEj2ctVKEWyYuGFz8E
    CHAIN_ID = 97
    GOOGLE_MAPS_API_KEY = AIzaSyDXXXXXIPepz_29M
-   Polkadot_RPC_URL = https://little-intensive-patina.Polkadot-devnet.quiknode.pro/bc836XXXXXXXa7b578
+   POLKADOT_RPC_URL = https://little-intensive-patina.Polkadot-devnet.quiknode.pro/bc836XXXXXXXa7b578
    ```
 
 4. **Start the Development Server:**

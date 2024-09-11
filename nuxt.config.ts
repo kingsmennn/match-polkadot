@@ -41,7 +41,6 @@ export default defineNuxtConfig({
       contractId: process.env.CONTRACT_ID,
       chainId: process.env.CHAIN_ID,
       googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
-      solanaRpcUrl: process.env.SOLANA_RPC_URL,
       polkadotRpcUrl: process.env.POLKADOT_RPC_URL,
     },
   },
