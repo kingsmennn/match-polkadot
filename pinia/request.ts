@@ -494,5 +494,19 @@ export const useRequestsStore = defineStore("requests", {
         throw error;
       }
     },
+    async markRequestAsCompleted(requestId: number) {
+      try {
+        
+      } catch (error) {
+        
+      }
+    },
+    async deleteRequest(requestId: number) {
+      try {
+        
+      } catch (error) {
+        
+      }
+    },
   },
 });

@@ -58,7 +58,17 @@
                   class="tw-absolute tw-z-10 tw-bottom-2 tw-right-2 tw-inline-block tw-p-2 tw-px-4 tw-rounded-full tw-bg-black
                   tw-select-none tw-text-white hover:tw-bg-black/80
                   tw-transition-all tw-duration-300 tw-font-medium">
-                  Revert
+                  <v-progress-circular
+                    v-if="cancelingRequest"
+                    indeterminate
+                    color="white"
+                    size="20"
+                    width="2"
+                  >
+                  </v-progress-circular>
+                  <template v-else>
+                    Revert
+                  </template>
                 </button>
 
                 <v-menu
@@ -73,6 +83,7 @@
                     </span>
   
                     <button
+                      @click="handleCancelRequest"
                       class="tw-p-2 tw-px-4 tw-rounded-full tw-bg-red-600
                       tw-select-none tw-text-white hover:tw-bg-red-600/80
                       tw-transition-all tw-duration-300 tw-font-medium">
@@ -84,10 +95,21 @@
               
               <button
                 v-if="hasLocked && lifecycle === RequestLifecycleIndex.ACCEPTED_BY_BUYER"
+                @click="handleMarkAsCompleted"
                 class="tw-inline-block tw-p-2 tw-px-4 mt-2 tw-rounded-full tw-bg-black
                 tw-select-none tw-text-white hover:tw-bg-black/80
                 tw-transition-all tw-duration-300 tw-font-medium">
-                Mark as completed
+                <v-progress-circular
+                  v-if="markingAsCompleted"
+                  indeterminate
+                  color="white"
+                  size="20"
+                  width="2"
+                >
+                </v-progress-circular>
+                <template v-else>
+                  Mark as completed
+                </template>
               </button>
             </div>
           </div>
@@ -285,4 +307,31 @@ watch(
   },
   { immediate: true }
 );
+
+const markingAsCompleted = ref(false);
+const handleMarkAsCompleted = async () => {
+  markingAsCompleted.value = true;
+  try {
+    await requestStore.markAsCompleted(props.requestId);
+    completed.value = true;
+  } catch (error: any) {
+    console.log(error);
+    toast.error(error);
+  } finally {
+    markingAsCompleted.value = false;
+  }
+};
+
+const cancelingRequest = ref(false);
+const handleCancelRequest = async () => {
+  cancelingRequest.value = true;
+  try {
+    await requestStore.cancelRequest(props.requestId);
+  } catch (error: any) {
+    console.log(error);
+    toast.error(error);
+  } finally {
+    cancelingRequest.value = false;
+  }
+};
 </script>
