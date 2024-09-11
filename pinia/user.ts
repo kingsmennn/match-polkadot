@@ -392,7 +392,6 @@ export const useUserStore = defineStore(STORE_KEY, {
 
     async polkadotApi() {
       if (apiInstance) {
-        console.log("Using existing API instance");
         return apiInstance;
       }
 
