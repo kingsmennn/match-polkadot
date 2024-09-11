@@ -15,7 +15,6 @@ import {
 } from "./user";
 
 import { BN, BN_ONE } from "@polkadot/util";
-import { ntobs58 } from "@/utils/nb58";
 import { web3FromAddress } from "@polkadot/extension-dapp";
 import type { WeightV2 } from "@polkadot/types/interfaces";
 
@@ -176,7 +175,7 @@ export const useRequestsStore = defineStore("requests", {
         const requests = [];
 
         for (const offer of offers) {
-          const { output: requestOutput } = await contract.query.getRequestById(
+          const { output: requestOutput } = await contract.query.getRequest(
             accountId,
             {
               gasLimit: api?.registry.createType("WeightV2", {
