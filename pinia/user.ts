@@ -11,9 +11,7 @@ import {
 } from "@/types";
 import { LOCATION_DECIMALS } from "@/utils/constants";
 import { useStoreStore } from "./store";
-import { useAnchorWallet } from "solana-wallets-vue";
-import { Connection, PublicKey } from "@solana/web3.js";
-import { AnchorProvider, Idl, Program } from "@project-serum/anchor";
+
 import { marketAbi } from "@/blockchain/abi";
 import { connectExtension } from "@/utils/connect_web3";
 import { BN, BN_ONE } from "@polkadot/util";
@@ -42,25 +40,6 @@ export const MAX_CALL_WEIGHT = new BN(5_000_000_000_000).isub(BN_ONE);
 export const PROOFSIZE = new BN(1_000_000);
 
 export const storageDepositLimit = null;
-
-const wallet = useAnchorWallet();
-export const programID = new PublicKey(
-  "89mKL8vWpyvdSimdYoZgXzMF9pb69VopCcAh1DZP41cL"
-);
-const preflightCommitment = "processed";
-const connection = new Connection(env.solanaRpcUrl, preflightCommitment);
-const provider = computed(() => {
-  if (!wallet.value) return;
-  return new AnchorProvider(
-    connection,
-    wallet.value,
-    AnchorProvider.defaultOptions()
-  );
-});
-const program = computed(() => {
-  if (!provider.value) return;
-  return new Program(marketAbi as any, programID, provider.value);
-});
 
 export const useUserStore = defineStore(STORE_KEY, {
   state: (): UserStore => ({

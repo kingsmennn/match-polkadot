@@ -148,7 +148,6 @@ export const useRequestsStore = defineStore("requests", {
       }
     },
     async fetchAllSellersRequests(accountId: string) {
-      //TODO: test this
       try {
         const userStore = useUserStore();
         const contract = await userStore.getContract();
