@@ -1,6 +1,6 @@
 export const marketAbi = {
   source: {
-    hash: "0xb6bba62d5e6d44f231e53a7a3d21b92f76e7e8465120c45721f397926f66f5d3",
+    hash: "0x839ddc25401ef2622be2bd29479117d9a133e67686a5369622ac3b3d58002b05",
     language: "ink! 5.0.0",
     compiler: "rustc 1.80.0-nightly",
     build_info: {
@@ -207,6 +207,42 @@ export const marketAbi = {
         module_path: "marketplace::marketplace",
         signature_topic:
           "0x5c662318d2493b498abca3765912ce07cad3037ae0fe0559c157379e1a623362",
+      },
+      {
+        args: [
+          {
+            docs: [],
+            indexed: true,
+            label: "request_id",
+            type: {
+              displayName: ["u64"],
+              type: 0,
+            },
+          },
+          {
+            docs: [],
+            indexed: true,
+            label: "buyer_address",
+            type: {
+              displayName: ["AccountId"],
+              type: 3,
+            },
+          },
+          {
+            docs: [],
+            indexed: false,
+            label: "removed_at",
+            type: {
+              displayName: ["u64"],
+              type: 0,
+            },
+          },
+        ],
+        docs: [],
+        label: "RequestRemoved",
+        module_path: "marketplace::marketplace",
+        signature_topic:
+          "0xcc6b8263c8e313db70d53b591c2e4573adb35870385523b2ab76280e9253a455",
       },
       {
         args: [
@@ -752,6 +788,27 @@ export const marketAbi = {
               type: 0,
             },
           },
+        ],
+        default: false,
+        docs: [],
+        label: "delete_request",
+        mutates: true,
+        payable: false,
+        returnType: {
+          displayName: ["ink", "MessageResult"],
+          type: 40,
+        },
+        selector: "0x5230f52c",
+      },
+      {
+        args: [
+          {
+            label: "request_id",
+            type: {
+              displayName: ["u64"],
+              type: 0,
+            },
+          },
           {
             label: "price",
             type: {
@@ -805,6 +862,27 @@ export const marketAbi = {
           type: 40,
         },
         selector: "0x00cf33d5",
+      },
+      {
+        args: [
+          {
+            label: "request_id",
+            type: {
+              displayName: ["u64"],
+              type: 0,
+            },
+          },
+        ],
+        default: false,
+        docs: [],
+        label: "mark_request_as_completed",
+        mutates: true,
+        payable: false,
+        returnType: {
+          displayName: ["ink", "MessageResult"],
+          type: 40,
+        },
+        selector: "0xf2f556ad",
       },
       {
         args: [
@@ -2566,6 +2644,14 @@ export const marketAbi = {
               {
                 index: 8,
                 name: "OfferAlreadyAccepted",
+              },
+              {
+                index: 9,
+                name: "RequestNotAccepted",
+              },
+              {
+                index: 10,
+                name: "RequestNotLocked",
               },
             ],
           },
