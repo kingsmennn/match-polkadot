@@ -56,7 +56,7 @@
                 </div>
                 <button
                   v-if="lifecycle === RequestLifecycleIndex.PENDING"
-                  id="revert"
+                  :id="`revert-${requestId}`"
                   class="tw-absolute tw-z-10 tw-bottom-2 tw-right-2 tw-inline-block tw-p-2 tw-px-4 tw-rounded-full tw-bg-black tw-select-none tw-text-white hover:tw-bg-black/80 tw-transition-all tw-duration-300 tw-font-medium"
                 >
                   <v-progress-circular
@@ -72,7 +72,7 @@
 
                 <v-menu
                   v-if="userStore.isConnected"
-                  activator="#revert"
+                  :activator="`#revert-${requestId}`"
                   transition="slide-y-transition"
                 >
                   <div
