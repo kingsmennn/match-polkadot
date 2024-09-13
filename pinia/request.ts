@@ -570,5 +570,8 @@ export const useRequestsStore = defineStore("requests", {
         throw error;
       }
     },
+    removeDeletedRequestFromList(requestId: number) {
+      this.list = this.list.filter((request) => request.requestId !== requestId);
+    }
   },
 });

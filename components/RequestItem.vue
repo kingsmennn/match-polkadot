@@ -317,6 +317,7 @@ const handleMarkAsCompleted = async () => {
   try {
     await requestStore.markRequestAsCompleted(props.requestId);
     completed.value = true;
+    toast.success("request completed");
   } catch (error: any) {
     console.log(error);
     toast.error(error);
@@ -330,6 +331,8 @@ const handleCancelRequest = async () => {
   cancelingRequest.value = true;
   try {
     await requestStore.deleteRequest(props.requestId);
+    requestStore.removeDeletedRequestFromList(props.requestId);
+    toast.success("request canceled");
   } catch (error: any) {
     console.log(error);
     toast.error(error);
