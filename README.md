@@ -2,7 +2,7 @@
 
 ---
 
-**Match** is a decentralized application (dApp) built on the Polkadot platform that connects buyers with sellers, allowing them to find the best deals on products and services. Using smart contracts on Polkadot, Match ensures secure, transparent, and efficient transactions between parties.
+**Match** is a decentralized application (dApp) built on the Polkadot blockchain that connects buyers with sellers, allowing them to find the best deals on products and services. Using smart contracts on Polkadot, Match ensures secure, transparent, and efficient transactions between parties.
 
 ### Team and Project Introduction
 
