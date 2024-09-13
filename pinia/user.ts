@@ -151,7 +151,7 @@ export const useUserStore = defineStore(STORE_KEY, {
     },
 
     async storeUserDetails(user: BlockchainUser) {
-      const userCookie = useCookie<User>(STORE_KEY_MIDDLEWARE);
+      const userCookie = useCookie<User>(STORE_KEY_MIDDLEWARE, { watch: true });
 
       const hasId = !!user[0];
 

@@ -47,7 +47,7 @@
 import { User, Request, RequestResponse } from '@/types';
 import { useRequestsStore } from '@/pinia/request';
 import { useUserStore } from '@/pinia/user';
-import { HashConnectConnectionState } from 'hashconnect';
+// import { HashConnectConnectionState } from 'hashconnect';
 
 definePageMeta({
   middleware: ['auth', 'seller'],

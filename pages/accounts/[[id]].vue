@@ -111,6 +111,7 @@ definePageMeta({
 })
 
 const route = useRoute()
+const router = useRouter()
 const userStore = useUserStore()
 const userInitial = computed(() => userStore?.username?.charAt(0).toUpperCase() ?? '?')
 const isSeller = computed(() => userStore.accountType === AccountType.SELLER)
@@ -134,14 +135,14 @@ onBeforeMount(()=>{
 })
 
 const requestsStore = useRequestsStore()
-onMounted(()=>{
+const handleFetchRequests = async (accountId:string) => {
   if (isSeller.value) {
-    requestsStore.fetchAllSellersRequests(userStore.accountId!)
+    requestsStore.fetchAllSellersRequests(accountId)
     return
   }
-
-  requestsStore.fetchAllUserRequests(userStore.accountId!)
-})
+  requestsStore.fetchAllUserRequests(accountId)
+}
+onMounted(()=>{handleFetchRequests(userStore.accountId!)})
 
 const activeRequestList = computed(() => {
   // if (isSeller.value) {
@@ -159,5 +160,13 @@ const completedRequestList = computed(() => {
   return requestsStore.list.filter(request=>{
     return request.lifecycle === RequestLifecycleIndex.COMPLETED
   })
+})
+
+// update users accountId in route when the selected account changes
+watch(() => userStore.accountId, async (val) => {
+  if (!val) return
+  router.replace(`/accounts/${val}`)
+  await new Promise(resolve => setTimeout(resolve, 500))
+  handleFetchRequests(val)
 })
 </script>
