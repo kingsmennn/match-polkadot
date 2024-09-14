@@ -17,7 +17,7 @@ import {
 import { BN, BN_ONE } from "@polkadot/util";
 import { web3FromAddress } from "@polkadot/extension-dapp";
 import type { WeightV2 } from "@polkadot/types/interfaces";
-
+import { getPolkadotContractResult } from "@/utils/contract-utils";
 type RequestsStoreType = {
   list: RequestResponse[];
 };
@@ -65,23 +65,40 @@ export const useRequestsStore = defineStore("requests", {
           new BN(Math.trunc(latitude).toString()),
           new BN(Math.trunc(longitude).toString())
         );
-
-        const result = await contract.tx
-          .createRequest(
-            {
-              gasLimit: api?.registry.createType(
-                "WeightV2",
-                gasRequired
-              ) as WeightV2,
-              storageDepositLimit,
-            },
-            name,
-            description,
-            [...images],
-            new BN(Math.trunc(latitude).toString()),
-            new BN(Math.trunc(longitude).toString())
-          )
-          .signAndSend(userStore.accountId!, { signer: injector.signer });
+        const result = await new Promise(async (resolve, reject) => {
+          const requestData = await contract.tx
+            .createRequest(
+              {
+                gasLimit: api?.registry.createType(
+                  "WeightV2",
+                  gasRequired
+                ) as WeightV2,
+                storageDepositLimit,
+              },
+              name,
+              description,
+              [...images],
+              new BN(Math.trunc(latitude).toString()),
+              new BN(Math.trunc(longitude).toString())
+            )
+            .signAndSend(
+              userStore.accountId!,
+              { signer: injector.signer },
+              (result) => {
+                try {
+                  const success = getPolkadotContractResult({
+                    result,
+                    api: api!,
+                  });
+                  if (success) {
+                    resolve(requestData);
+                  }
+                } catch (error) {
+                  reject(error);
+                }
+              }
+            );
+        });
 
         return result;
       } catch (error) {
@@ -383,22 +400,39 @@ export const useRequestsStore = defineStore("requests", {
           [...images],
           storeName
         );
-
-        const result = await contract.tx
-          .createOffer(
-            {
-              gasLimit: api?.registry.createType(
-                "WeightV2",
-                gasRequired
-              ) as WeightV2,
-              storageDepositLimit,
-            },
-            requestId,
-            price,
-            [...images],
-            storeName
-          )
-          .signAndSend(userStore.accountId!, { signer: injector.signer });
+        const result = await new Promise(async (resolve, reject) => {
+          const offerResult = await contract.tx
+            .createOffer(
+              {
+                gasLimit: api?.registry.createType(
+                  "WeightV2",
+                  gasRequired
+                ) as WeightV2,
+                storageDepositLimit,
+              },
+              requestId,
+              price,
+              [...images],
+              storeName
+            )
+            .signAndSend(
+              userStore.accountId!,
+              { signer: injector.signer },
+              (result) => {
+                try {
+                  const success = getPolkadotContractResult({
+                    result,
+                    api: api!,
+                  });
+                  if (success) {
+                    resolve(offerResult);
+                  }
+                } catch (error) {
+                  reject(error);
+                }
+              }
+            );
+        });
 
         return result;
       } catch (error) {
@@ -424,19 +458,36 @@ export const useRequestsStore = defineStore("requests", {
           },
           offerId
         );
-
-        const result = await contract.tx
-          .acceptOffer(
-            {
-              gasLimit: api?.registry.createType(
-                "WeightV2",
-                gasRequired
-              ) as WeightV2,
-              storageDepositLimit,
-            },
-            offerId
-          )
-          .signAndSend(userStore.accountId!, { signer: injector.signer });
+        const result = await new Promise(async (resolve, reject) => {
+          const acceptOfferRes = await contract.tx
+            .acceptOffer(
+              {
+                gasLimit: api?.registry.createType(
+                  "WeightV2",
+                  gasRequired
+                ) as WeightV2,
+                storageDepositLimit,
+              },
+              offerId
+            )
+            .signAndSend(
+              userStore.accountId!,
+              { signer: injector.signer },
+              (result) => {
+                try {
+                  const success = getPolkadotContractResult({
+                    result,
+                    api: api!,
+                  });
+                  if (success) {
+                    resolve(acceptOfferRes);
+                  }
+                } catch (error) {
+                  reject(error);
+                }
+              }
+            );
+        });
 
         return result;
       } catch (error) {
@@ -513,18 +564,36 @@ export const useRequestsStore = defineStore("requests", {
           requestId
         );
 
-        const result = await contract.tx
-          .markRequestAsCompleted(
-            {
-              gasLimit: api?.registry.createType(
-                "WeightV2",
-                gasRequired
-              ) as WeightV2,
-              storageDepositLimit,
-            },
-            requestId
-          )
-          .signAndSend(userStore.accountId!, { signer: injector.signer });
+        const result = await new Promise(async (resolve, reject) => {
+          const markResult = await contract.tx
+            .markRequestAsCompleted(
+              {
+                gasLimit: api?.registry.createType(
+                  "WeightV2",
+                  gasRequired
+                ) as WeightV2,
+                storageDepositLimit,
+              },
+              requestId
+            )
+            .signAndSend(
+              userStore.accountId!,
+              { signer: injector.signer },
+              (result) => {
+                try {
+                  const success = getPolkadotContractResult({
+                    result,
+                    api: api!,
+                  });
+                  if (success) {
+                    resolve(markResult);
+                  }
+                } catch (error) {
+                  reject(error);
+                }
+              }
+            );
+        });
 
         return result;
       } catch (error) {
@@ -550,19 +619,36 @@ export const useRequestsStore = defineStore("requests", {
           },
           requestId
         );
-
-        const result = await contract.tx
-          .deleteRequest(
-            {
-              gasLimit: api?.registry.createType(
-                "WeightV2",
-                gasRequired
-              ) as WeightV2,
-              storageDepositLimit,
-            },
-            requestId
-          )
-          .signAndSend(userStore.accountId!, { signer: injector.signer });
+        const result = await new Promise(async (resolve, reject) => {
+          const deleteRequest = await contract.tx
+            .deleteRequest(
+              {
+                gasLimit: api?.registry.createType(
+                  "WeightV2",
+                  gasRequired
+                ) as WeightV2,
+                storageDepositLimit,
+              },
+              requestId
+            )
+            .signAndSend(
+              userStore.accountId!,
+              { signer: injector.signer },
+              (result) => {
+                try {
+                  const success = getPolkadotContractResult({
+                    result,
+                    api: api!,
+                  });
+                  if (success) {
+                    resolve(deleteRequest);
+                  }
+                } catch (error) {
+                  reject(error);
+                }
+              }
+            );
+        });
 
         return result;
       } catch (error) {
@@ -571,7 +657,9 @@ export const useRequestsStore = defineStore("requests", {
       }
     },
     removeDeletedRequestFromList(requestId: number) {
-      this.list = this.list.filter((request) => request.requestId !== requestId);
-    }
+      this.list = this.list.filter(
+        (request) => request.requestId !== requestId
+      );
+    },
   },
 });

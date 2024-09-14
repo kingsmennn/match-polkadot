@@ -11,7 +11,7 @@ import { LOCATION_DECIMALS } from "@/utils/constants";
 import { BN, BN_ONE } from "@polkadot/util";
 import { web3FromAddress } from "@polkadot/extension-dapp";
 import type { WeightV2 } from "@polkadot/types/interfaces";
-
+import { getPolkadotContractResult } from "@/utils/contract-utils";
 export const useStoreStore = defineStore(STORE_STORE_KEY, {
   state: () => ({}),
   getters: {},
@@ -50,23 +50,40 @@ export const useStoreStore = defineStore(STORE_STORE_KEY, {
           lat,
           long
         );
-
-        await contract.tx
-          .createStore(
-            {
-              gasLimit: api?.registry.createType(
-                "WeightV2",
-                gasRequired
-              ) as WeightV2,
-              storageDepositLimit,
-            },
-            name,
-            description,
-            phone,
-            lat,
-            long
-          )
-          .signAndSend(userStore.accountId!, { signer: injector.signer });
+        await new Promise(async (resolve, reject) => {
+          await contract.tx
+            .createStore(
+              {
+                gasLimit: api?.registry.createType(
+                  "WeightV2",
+                  gasRequired
+                ) as WeightV2,
+                storageDepositLimit,
+              },
+              name,
+              description,
+              phone,
+              lat,
+              long
+            )
+            .signAndSend(
+              userStore.accountId!,
+              { signer: injector.signer },
+              (result) => {
+                try {
+                  const success = getPolkadotContractResult({
+                    result,
+                    api: api!,
+                  });
+                  if (success) {
+                    resolve(success);
+                  }
+                } catch (error) {
+                  reject(error);
+                }
+              }
+            );
+        });
 
         userStore.storeDetails = [
           {
@@ -106,16 +123,16 @@ export const useStoreStore = defineStore(STORE_STORE_KEY, {
           const userData = (userInfo as any)?.ok;
 
           const response: Store[] = userData.map((store: any) => {
-             return {
-                id: store.id.toString(),
-                name: store.name,
-                description: store.description,
-                phone: store.phone,
-                location: [
-                  Number(store.location.longitude.toString()),
-                  Number(store.location.latitude.toString()),
-                ],
-              }
+            return {
+              id: store.id.toString(),
+              name: store.name,
+              description: store.description,
+              phone: store.phone,
+              location: [
+                Number(store.location.longitude.toString()),
+                Number(store.location.latitude.toString()),
+              ],
+            };
           });
 
           userStore.storeDetails = response;

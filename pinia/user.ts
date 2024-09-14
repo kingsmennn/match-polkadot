@@ -330,23 +330,40 @@ export const useUserStore = defineStore(STORE_KEY, {
         );
 
         const injector = await web3FromAddress(this.accountId!);
-
-        await contract.tx
-          .updateUser(
-            {
-              gasLimit: api?.registry.createType(
-                "WeightV2",
-                gasRequired
-              ) as WeightV2,
-              storageDepositLimit,
-            },
-            payload.username,
-            payload.phone,
-            payload.lat,
-            payload.lng,
-            payload.account_type
-          )
-          .signAndSend(this.accountId!, { signer: injector.signer });
+        await new Promise(async (resolve, reject) => {
+          await contract.tx
+            .updateUser(
+              {
+                gasLimit: api?.registry.createType(
+                  "WeightV2",
+                  gasRequired
+                ) as WeightV2,
+                storageDepositLimit,
+              },
+              payload.username,
+              payload.phone,
+              payload.lat,
+              payload.lng,
+              payload.account_type
+            )
+            .signAndSend(
+              this.accountId!,
+              { signer: injector.signer },
+              (result) => {
+                try {
+                  const success = getPolkadotContractResult({
+                    result,
+                    api: api!,
+                  });
+                  if (success) {
+                    resolve(success);
+                  }
+                } catch (error) {
+                  reject(error);
+                }
+              }
+            );
+        });
 
         return {
           tx: "",
@@ -375,19 +392,36 @@ export const useUserStore = defineStore(STORE_KEY, {
         );
 
         const injector = await web3FromAddress(this.accountId!);
-
-        await contract.tx
-          .toggleLocation(
-            {
-              gasLimit: api?.registry.createType(
-                "WeightV2",
-                gasRequired
-              ) as WeightV2,
-              storageDepositLimit,
-            },
-            value
-          )
-          .signAndSend(this.accountId!, { signer: injector.signer });
+        await new Promise(async (resolve, reject) => {
+          await contract.tx
+            .toggleLocation(
+              {
+                gasLimit: api?.registry.createType(
+                  "WeightV2",
+                  gasRequired
+                ) as WeightV2,
+                storageDepositLimit,
+              },
+              value
+            )
+            .signAndSend(
+              this.accountId!,
+              { signer: injector.signer },
+              (result) => {
+                try {
+                  const success = getPolkadotContractResult({
+                    result,
+                    api: api!,
+                  });
+                  if (success) {
+                    resolve(success);
+                  }
+                } catch (error) {
+                  reject(error);
+                }
+              }
+            );
+        });
       } catch (error) {
         console.error("Error updating user:", error);
         throw error;
