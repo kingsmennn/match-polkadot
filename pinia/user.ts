@@ -230,7 +230,8 @@ export const useUserStore = defineStore(STORE_KEY, {
           account_type == AccountType.BUYER ? 0 : 1
         );
 
-        await contract.tx
+        await new Promise(async (resolve, reject) => {
+          await contract.tx
           .createUser(
             {
               gasLimit: api?.registry.createType(
@@ -245,7 +246,17 @@ export const useUserStore = defineStore(STORE_KEY, {
             long,
             account_type == AccountType.BUYER ? 0 : 1
           )
-          .signAndSend(this.accountId!, { signer: injector.signer });
+          .signAndSend(this.accountId!, { signer: injector.signer },(result) => {
+            if(result.isError){
+              reject(result.internalError?.message);
+            }
+            else if (result.status.isInBlock) {
+              resolve(result);
+            }
+          });
+        })
+
+
 
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
