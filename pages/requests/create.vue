@@ -176,6 +176,23 @@ const snackbar = ref({
   text: "",
 });
 
+const requestsStore = useRequestsStore();
+const userStore = useUserStore();
+
+// if users location settings is enabled, check that they've provided one
+// else redirect them back to dashboard
+watch(
+  [
+    ()=>userStore.locationEnabled,
+    ()=>userStore.location,
+    ()=>userStore.accountId
+  ], ([locationEnabled, location, accountId]) => {
+    if(!accountId) return
+    if(locationEnabled && !location?.[0]) {
+      navigateTo('/accounts/' + userStore.accountId)
+    }
+}, { immediate: true })
+
 const carousel = ref(0);
 const spatularImages = [
   "https://firebasestorage.googleapis.com/v0/b/i-get-am.appspot.com/o/istockphoto-1167356564-612x612.jpg?alt=media&token=ec1b8ee2-d532-4204-a1f3-c66833ee694e",
@@ -234,8 +251,6 @@ const handleAddImaageBtnClick = async () => {
 const router = useRouter();
 const successModal = ref(false);
 const submiting = ref(false);
-const requestsStore = useRequestsStore();
-const userStore = useUserStore();
 const handleNewRequest = async () => {
   // because image is required
   if (!form.value.images.length) {
@@ -243,14 +258,17 @@ const handleNewRequest = async () => {
     return;
   }
 
+  // check users location preference
+  const locationToUse = userStore.locationEnabled ? userStore.location! : [0, 0];
+
   try {
     submiting.value = true;
     const response = await requestsStore.createRequest({
       name: form.value.name,
       description: form.value.description,
       images: form.value.images,
-      longitude: userStore.location?.[0]!,
-      latitude: userStore.location?.[1]!,
+      longitude: locationToUse[0],
+      latitude: locationToUse[1],
     });
     if (typeof response === "undefined") {
       return;

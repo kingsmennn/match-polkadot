@@ -88,7 +88,6 @@
           </v-menu>
 
           <NuxtLink
-            v-if="isSeller"
             to="/settings"
             class="tw-flex tw-bg-white hover:tw-bg-white/80 tw-rounded-full tw-h-7 tw-w-7
             tw-items-center tw-justify-center tw-leading-none

@@ -4,15 +4,13 @@ import { AccountType } from '@/types';
 import { toast } from 'vue-sonner';
 
 definePageMeta({
-  middleware: ['seller'],
+  middleware: ['auth'],
   requiresAuth: true,
 })
 const userStore = useUserStore()
-// this is used to eject users with accountType === BUYER from this page
-// use-case is when SELLER account was initially here then switched to BUYER account
-watch([() => userStore.accountType, () => userStore.accountId], ([accountType, accountId]) => {
-  if(!accountType || !accountId) return
-  if(accountType === AccountType.SELLER) return
+// if user was in this page and they disconnected, eject them
+watch(() => userStore.accountId, (accountId) => {
+  if(accountId) return
   navigateTo('/')
 })
 
@@ -38,6 +36,10 @@ const handleToggleEnableLocation = async (val: boolean) => {
   }
 }
 const switchColor = computed(()=>enableRequestByProximity.value ? 'white' : 'black')
+const locationText = computed(()=>
+  userStore.accountType === AccountType.SELLER ?
+    'Show only requests near me' : 'Only stores arround me should see my requests (use location)'
+)
 </script>
 
 <template>
@@ -51,10 +53,8 @@ const switchColor = computed(()=>enableRequestByProximity.value ? 'white' : 'bla
 
         <div
           class="tw-flex tw-justify-between md:tw-items-center tw-p-2 tw-px-4
-          tw-rounded-2xl tw-bg-gray-50 tw-text-2xl">
-          <span class="flex-1 tw-font-bold">
-            Show only requests near me
-          </span>
+          tw-gap-3 tw-rounded-2xl tw-bg-gray-50 tw-text-2xl">
+          <span class="flex-1 tw-font-bold">{{ locationText }}</span>
           <span class="max-md:tw-self-start">
             <v-switch
               v-model="enableRequestByProximity"

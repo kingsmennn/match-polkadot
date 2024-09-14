@@ -2,7 +2,7 @@
   <div class="tw-max-w-7xl tw-mx-auto">
     <div class="tw-p-6 sm:tw-p-10">
       <FinalizeRegistration
-        v-if="!userStore.passedSecondaryCheck"
+        v-if="!userStore.passedSecondaryCheck && locationEnabled"
         class="tw-mb-6"
       />
 
@@ -13,14 +13,14 @@
           {{ userInitial }}
         </div>
 
-        <NuxtLink
+        <button
           v-if="isBuyer"
-          to="/requests/create"
+          @click="handleRequestForItem"
           class="tw-inline-block tw-p-4 tw-px-6 tw-rounded-full tw-bg-black
           tw-select-none tw-text-white hover:tw-bg-black/80
           tw-transition-all tw-duration-300 tw-font-black">
           Request for an item
-        </NuxtLink>
+        </button>
       </div>
       
       <div>
@@ -100,6 +100,8 @@ import { useRoute } from 'vue-router'
 import { RequestLifecycle, AccountType, User, Request, Offer, RequestLifecycleIndex } from '@/types'
 import { useUserStore } from '@/pinia/user';
 import { useRequestsStore } from '@/pinia/request';
+import { toast } from 'vue-sonner';
+import { locationRequired_buyer } from '@/utils/messages';
 
 const env = useRuntimeConfig().public
 useHead({
@@ -115,7 +117,8 @@ const router = useRouter()
 const userStore = useUserStore()
 const userInitial = computed(() => userStore?.username?.charAt(0).toUpperCase() ?? '?')
 const isSeller = computed(() => userStore.accountType === AccountType.SELLER)
-const isBuyer = computed(() => userStore.accountType === AccountType.BUYER) 
+const isBuyer = computed(() => userStore.accountType === AccountType.BUYER)
+const locationEnabled = computed(() => userStore.locationEnabled)
 
 const tab = ref()
 const tab_list = ref<{ name: string, slug: string, icon: string }[]>([])
@@ -133,6 +136,15 @@ onBeforeMount(()=>{
     { name: 'Completed requests', slug: 'completed', icon: 'mdi-cube-send' },
   ]
 })
+
+const handleRequestForItem = () => {
+  // check if user needs to provide their location before creating a request
+  if(!locationEnabled.value) {
+    router.push('/requests/create')
+    return
+  }
+  toast.info(locationRequired_buyer)
+}
 
 const requestsStore = useRequestsStore()
 const handleFetchRequests = async (accountId:string) => {
