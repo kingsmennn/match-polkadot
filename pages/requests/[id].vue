@@ -59,7 +59,7 @@
           <div
             :class="{ 'tw-hidden sm:tw-block': tab !== tab_list[1].slug }"
             class="sm:tw-col-span-1">
-            <template v-if="isBuyer" >
+            <template v-if="isBuyer">
               <div v-if="renderedOffers.length" class="tw-space-y-4">
                 <template v-for="(offer,n) in renderedOffers" :key="n">
                   <!-- {{ offer }} -->
@@ -73,6 +73,7 @@
                     :lifecycle="requestDetails.lifecycle"
                     :price-quote="offer.price"
                     :is-accepted="offer.isAccepted"
+                    @offer-accepted="handleMarkAsAccepted(offer.offerId!)"
                   />
                 </template>
               </div>
@@ -219,5 +220,16 @@ const sellerExistingOffer = computed(()=>{
   })
   return res
 })
+
+const handleMarkAsAccepted = (offerId: number) => {
+  // mark offer as accepted
+  allOffers.value.forEach((offer)=>{
+    // reset all other offers
+    offer.isAccepted = false
+    if(offer.id === offerId){
+      offer.isAccepted = true
+    }
+  })
+}
 
 </script>

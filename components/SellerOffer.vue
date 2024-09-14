@@ -78,6 +78,9 @@ interface Props {
   isAccepted?: boolean;
 }
 const props = defineProps<Props>();
+const emits = defineEmits<{
+  (e: "offer-accepted", offerId: number): void
+}>();
 
 const carousel = ref(0);
 const displayedPrice = computed<string>(() => {
@@ -92,6 +95,7 @@ const handleAcceptBtnClick = async () => {
   try {
     console.log(props);
     await requestStore.acceptOffer(props.offerId);
+    emits("offer-accepted", props.offerId);
     toast.success("offer accepted!");
   } catch (error: any) {
     toast.error(error);
