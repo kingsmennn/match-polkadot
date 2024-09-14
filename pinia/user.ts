@@ -33,6 +33,7 @@ type UserStore = {
     userNotFound: boolean;
     message?: string;
   };
+  locationEnabled: boolean;
 };
 
 const env = useRuntimeConfig().public;
@@ -50,6 +51,7 @@ export const useUserStore = defineStore(STORE_KEY, {
     blockchainError: {
       userNotFound: false,
     },
+    locationEnabled: false,
   }),
   getters: {
     isConnected: (state) => !!state.accountId,
@@ -100,9 +102,16 @@ export const useUserStore = defineStore(STORE_KEY, {
     },
 
     async disconnect() {
-      this.accountId = null;
-      this.userDetails = undefined;
-      this.blockchainError.userNotFound = false;
+      try {
+        this.accountId = null;
+        this.userDetails = undefined;
+        this.storeDetails = undefined;
+        this.blockchainError.userNotFound = false;
+        const userCookie = useCookie<User | null>(STORE_KEY_MIDDLEWARE, { watch: true });
+        userCookie.value = null;
+      } catch (error) {
+        console.error("Error disconnecting:", error);
+      }
     },
 
     async fetchUser(account_id: string): Promise<any> {
@@ -325,6 +334,9 @@ export const useUserStore = defineStore(STORE_KEY, {
         throw error;
       }
     },
+    async toggleEnableLocation(value: boolean) {
+      
+    },
     async fetchUserById(userId: number) {
       try {
         const userStore = useUserStore();
@@ -382,7 +394,6 @@ export const useUserStore = defineStore(STORE_KEY, {
             };
           });
         } catch (_) {}
-        console.log(userData);
         return userData;
       } catch (error) {
         console.log(error);
