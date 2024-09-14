@@ -17,6 +17,19 @@ watch([() => userStore.accountType, () => userStore.accountId], ([accountType, a
 
 const enableRequestByProximity = ref(false)
 const updatingProximityPreference = ref(false)
+
+// this is used to enable/disable location preference
+watch(enableRequestByProximity, async (val)=>{
+  updatingProximityPreference.value = true
+  console.log({updatingProximityPreference: val})
+  try {
+    await userStore.toggleEnableLocation(val)
+  } catch (error) {
+    console.log(error)
+  } finally {
+    updatingProximityPreference.value = false
+  }
+})
 </script>
 
 <template>

@@ -337,9 +337,6 @@ export const useUserStore = defineStore(STORE_KEY, {
     async toggleEnableLocation(value: boolean) {
       try {
         const contract = await this.getContract();
-
-      
-
         const api = await this.polkadotApi();
 
         const { gasRequired } = await contract.query.toggleLocation(
@@ -368,8 +365,6 @@ export const useUserStore = defineStore(STORE_KEY, {
             value
           )
           .signAndSend(this.accountId!, { signer: injector.signer });
-
-       
       } catch (error) {
         console.error("Error updating user:", error);
         throw error;
