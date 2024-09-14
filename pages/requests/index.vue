@@ -44,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { User, Request, RequestResponse } from '@/types';
+import { User, Request, RequestResponse, AccountType } from '@/types';
 import { useRequestsStore } from '@/pinia/request';
 import { useUserStore } from '@/pinia/user';
 // import { HashConnectConnectionState } from 'hashconnect';
@@ -77,4 +77,12 @@ const unwatch = watch(()=>userStore.accountId, async (val)=>{
   fetchUserRequests()
 }, { immediate: true })
 const userRequestList = computed(()=>requestsStore.list)
+
+// this is used to eject users with accountType === BUYER from this page
+// use-case is when SELLER account was initially here then switched to BUYER account
+watch([() => userStore.accountType, () => userStore.accountId], ([accountType, accountId]) => {
+  if(!accountType || !accountId) return
+  if(accountType === AccountType.SELLER) return
+  navigateTo('/')
+})
 </script>
