@@ -24,6 +24,7 @@ import {
 import { ApiPromise, WsProvider } from "@polkadot/api";
 
 import { ContractPromise } from "@polkadot/api-contract";
+import { getPolkadotContractResult } from "@/utils/contract-utils";
 
 type UserStore = {
   accountId: string | null;
@@ -107,7 +108,9 @@ export const useUserStore = defineStore(STORE_KEY, {
         this.userDetails = undefined;
         this.storeDetails = undefined;
         this.blockchainError.userNotFound = false;
-        const userCookie = useCookie<User | null>(STORE_KEY_MIDDLEWARE, { watch: true });
+        const userCookie = useCookie<User | null>(STORE_KEY_MIDDLEWARE, {
+          watch: true,
+        });
         userCookie.value = null;
       } catch (error) {
         console.error("Error disconnecting:", error);
@@ -232,31 +235,40 @@ export const useUserStore = defineStore(STORE_KEY, {
 
         await new Promise(async (resolve, reject) => {
           await contract.tx
-          .createUser(
-            {
-              gasLimit: api?.registry.createType(
-                "WeightV2",
-                gasRequired
-              ) as WeightV2,
-              storageDepositLimit,
-            },
-            username,
-            phone,
-            lat,
-            long,
-            account_type == AccountType.BUYER ? 0 : 1
-          )
-          .signAndSend(this.accountId!, { signer: injector.signer },(result) => {
-            if(result.isError){
-              reject(result.internalError?.message);
-            }
-            else if (result.status.isInBlock) {
-              resolve(result);
-            }
-          });
-        })
+            .createUser(
+              {
+                gasLimit: api?.registry.createType(
+                  "WeightV2",
+                  gasRequired
+                ) as WeightV2,
+                storageDepositLimit,
+              },
+              username,
+              phone,
+              lat,
+              long,
+              account_type == AccountType.BUYER ? 0 : 1
+            )
+            .signAndSend(
+              this.accountId!,
+              { signer: injector.signer },
+              (result) => {
+                try {
+                  const success = getPolkadotContractResult({
+                    result,
+                    api: api!,
+                  });
+                  if (success) {
+                    resolve(success);
+                  }
+                } catch (error) {
+                  reject(error);
+                }
+              }
+            );
+        });
 
-
+        console.log("User created successfully");
 
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
@@ -394,7 +406,7 @@ export const useUserStore = defineStore(STORE_KEY, {
               proofSize: PROOFSIZE,
             }) as WeightV2,
             storageDepositLimit,
-          },
+          }
         );
         if (result.isErr) {
           throw new Error(result.asErr.toString());
