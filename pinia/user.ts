@@ -335,7 +335,45 @@ export const useUserStore = defineStore(STORE_KEY, {
       }
     },
     async toggleEnableLocation(value: boolean) {
+      try {
+        const contract = await this.getContract();
+
       
+
+        const api = await this.polkadotApi();
+
+        const { gasRequired } = await contract.query.toggleLocation(
+          this.accountId!,
+          {
+            gasLimit: api?.registry.createType("WeightV2", {
+              refTime: MAX_CALL_WEIGHT,
+              proofSize: PROOFSIZE,
+            }) as WeightV2,
+            storageDepositLimit,
+          },
+          value
+        );
+
+        const injector = await web3FromAddress(this.accountId!);
+
+        await contract.tx
+          .toggleLocation(
+            {
+              gasLimit: api?.registry.createType(
+                "WeightV2",
+                gasRequired
+              ) as WeightV2,
+              storageDepositLimit,
+            },
+            value
+          )
+          .signAndSend(this.accountId!, { signer: injector.signer });
+
+       
+      } catch (error) {
+        console.error("Error updating user:", error);
+        throw error;
+      }
     },
     async fetchUserById(userId: number) {
       try {
