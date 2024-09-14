@@ -88,6 +88,10 @@ export const useUserStore = defineStore(STORE_KEY, {
 
         this.storeUserDetails(blockchainUser);
 
+        this.fetchLocationPreference().then((res) => {
+          this.locationEnabled = res;
+        })
+
         if (this.accountType === AccountType.SELLER) {
           const storeStore = useStoreStore();
           const res = await storeStore.getUserStores(this.accountId!);
@@ -108,6 +112,7 @@ export const useUserStore = defineStore(STORE_KEY, {
         this.userDetails = undefined;
         this.storeDetails = undefined;
         this.blockchainError.userNotFound = false;
+        this.locationEnabled = false;
         const userCookie = useCookie<User | null>(STORE_KEY_MIDDLEWARE, {
           watch: true,
         });
@@ -268,8 +273,6 @@ export const useUserStore = defineStore(STORE_KEY, {
             );
         });
 
-        console.log("User created successfully");
-
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
         const blockchainUser = await this.fetchUser(this.accountId!);
@@ -414,6 +417,7 @@ export const useUserStore = defineStore(STORE_KEY, {
                     api: api!,
                   });
                   if (success) {
+                    this.locationEnabled = value;
                     resolve(success);
                   }
                 } catch (error) {
@@ -427,7 +431,7 @@ export const useUserStore = defineStore(STORE_KEY, {
         throw error;
       }
     },
-    async getLocationPreference(): Promise<boolean> {
+    async fetchLocationPreference(): Promise<boolean> {
       try {
         const contract = await this.getContract();
         const api = await this.polkadotApi();
@@ -445,12 +449,12 @@ export const useUserStore = defineStore(STORE_KEY, {
         if (result.isErr) {
           throw new Error(result.asErr.toString());
         }
-        const userInfo = output?.toJSON();
-        const userData = (userInfo as any)?.ok;
+        const locPreferenceInfo = output?.toJSON();
+        const locPreferenceData = (locPreferenceInfo as any)?.ok;
 
-        return userData;
+        return locPreferenceData;
       } catch (error) {
-        console.error("Error updating user:", error);
+        console.error("Error fetching location preference:", error);
         throw error;
       }
     },
@@ -562,6 +566,7 @@ export const useUserStore = defineStore(STORE_KEY, {
       "accountId",
       "userDetails",
       "blockchainError.userNotFound",
+      "locationEnabled",
       "storeDetails.name",
       "storeDetails.description",
       "storeDetails.location",

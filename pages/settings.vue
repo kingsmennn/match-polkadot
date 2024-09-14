@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useUserStore } from '@/pinia/user';
 import { AccountType } from '@/types';
+import { toast } from 'vue-sonner';
 
 definePageMeta({
   middleware: ['seller'],
@@ -17,19 +18,26 @@ watch([() => userStore.accountType, () => userStore.accountId], ([accountType, a
 
 const enableRequestByProximity = ref(false)
 const updatingProximityPreference = ref(false)
+watch(()=>userStore.locationEnabled, (value)=>{
+  enableRequestByProximity.value = value
+}, { immediate: true })
 
 // this is used to enable/disable location preference
-watch(enableRequestByProximity, async (val)=>{
+const handleToggleEnableLocation = async (val: boolean) => {
   updatingProximityPreference.value = true
-  console.log({updatingProximityPreference: val})
   try {
     await userStore.toggleEnableLocation(val)
+    toast.success(val ? 'proximity preference enabled' : 'proximity preference disabled')
   } catch (error) {
     console.log(error)
+    toast.error((error as Error).message || 'unable to update proximity preference')
+    // revert back to previous value
+    enableRequestByProximity.value = !val
   } finally {
     updatingProximityPreference.value = false
   }
-})
+}
+const switchColor = computed(()=>enableRequestByProximity.value ? 'white' : 'black')
 </script>
 
 <template>
@@ -50,9 +58,10 @@ watch(enableRequestByProximity, async (val)=>{
           <span class="max-md:tw-self-start">
             <v-switch
               v-model="enableRequestByProximity"
-              :loading="updatingProximityPreference && 'white'"
+              :loading="updatingProximityPreference && switchColor"
               hide-details="auto"
               inset
+              @update:model-value="(handleToggleEnableLocation as any)"
             ></v-switch>
           </span>
         </div>
