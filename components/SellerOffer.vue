@@ -93,7 +93,6 @@ const requestStore = useRequestsStore();
 const handleAcceptBtnClick = async () => {
   submiting.value = true;
   try {
-    console.log(props);
     await requestStore.acceptOffer(props.offerId);
     emits("offer-accepted", props.offerId);
     toast.success("offer accepted!");

@@ -142,8 +142,10 @@
               <span>seller</span>
             </template>
             <template v-else>
-              <v-icon>mdi-checkbox-marked-circle</v-icon>
-              <span>accepted</span>
+              <v-icon>
+                {{ hasMyOffer ? "mdi-checkbox-marked-circle" : "mdi-timelapse" }}
+              </v-icon>
+              <span>{{ hasMyOffer ? "accepted" : "available" }}</span>
             </template>
           </div>
           <div class="tw-flex tw-justify-center tw-items-center tw-gap-1">
@@ -206,7 +208,7 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { AccountType, RequestLifecycleIndex, Store, User } from "@/types";
+import { AccountType, Offer, RequestLifecycleIndex, Store, User } from "@/types";
 import moment from "moment";
 import { useRequestsStore } from "@/pinia/request";
 import { TIME_TILL_LOCK } from "@/utils/constants";
@@ -340,4 +342,18 @@ const handleCancelRequest = async () => {
     cancelingRequest.value = false;
   }
 };
+
+// check if I have made offer to request
+const hasMyOffer = ref(false);
+const requestsStore = useRequestsStore();
+const fetchAllRequestOffers = async () => {
+  try {
+    const res = await requestsStore.fetchAllOffers(props.requestId!) as Offer[]
+    hasMyOffer.value = res.some((offer) => offer.sellerId === userStore.userId)
+  } catch (error) {
+    toast.error("error fetching offers")
+  } finally {
+  }
+}
+onMounted(fetchAllRequestOffers)
 </script>

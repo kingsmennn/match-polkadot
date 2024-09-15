@@ -537,7 +537,6 @@ export const useRequestsStore = defineStore("requests", {
             return offer_;
           });
 
-          this.list = res;
           return res;
         }
       } catch (error) {
