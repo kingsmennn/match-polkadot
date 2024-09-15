@@ -4,13 +4,25 @@
       <h1 class="tw-text-5xl tw-font-bold tw-mt-4">
         List of requests made around your store
       </h1>
-      <!-- <p
-        v-if="!(!!userCookie?.stores?.[0]?.location.lga!)"
-        class="tw-text-white tw-bg-black">
-        Please complete your profile in your account page to be able to view requests.
-      </p> -->
+      <p v-if="!userStore.locationEnabled" class="tw-bg-black tw-text-white tw-mt-2">You are currently viewing requests that was not made with any location data</p>
+
+      <div class="tw-flex tw-justify-end tw-mt-10">
+        <div class="tw-flex tw-gap-1.5 tw-select-none">
+          <v-icon>{{ visibleRequestsIcon }}</v-icon>
+          <span>{{ userStore.locationEnabled ? 'Nearby' : 'No location' }}</span>
+          <span class="tw-text-white tw-bg-black">
+            <strong> {{ visibleRequestsCount }}</strong> 
+          </span>
+  
+          <v-tooltip
+            activator="parent"
+            location="top"
+            theme="dark"
+          >This preference can be changed in your settings</v-tooltip>
+        </div>
+      </div>
       
-      <div v-if="!loading" class="tw-grid sm:tw-grid-cols-2 tw-gap-3 tw-mt-10">
+      <div v-if="!loading" class="tw-grid sm:tw-grid-cols-2 tw-gap-3 tw-mt-2">
         <RequestItem
           v-for="request in userRequestList" :key="request.requestId"
           :requestId="request.requestId!"
@@ -47,15 +59,19 @@
 import { User, Request, RequestResponse, AccountType } from '@/types';
 import { useRequestsStore } from '@/pinia/request';
 import { useUserStore } from '@/pinia/user';
-// import { HashConnectConnectionState } from 'hashconnect';
 
 definePageMeta({
   middleware: ['auth', 'seller'],
   requiresAuth: true,
 })
 
-const requestsStore = useRequestsStore()
 const userStore = useUserStore()
+const visibleRequestsIcon = computed(()=>userStore.locationEnabled ? 'mdi-map-marker-radius' : 'mdi-map-marker-question')
+const visibleRequestsCount = computed(()=>
+  `${requestsStore.list.length} request${requestsStore.list.length === 1 ? '' : 's'}`
+)
+
+const requestsStore = useRequestsStore()
 const loading = ref(true)
 const fetchUserRequests = async () => {
   loading.value = true
