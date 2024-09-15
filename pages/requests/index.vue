@@ -2,7 +2,7 @@
   <div class="tw-max-w-7xl tw-mx-auto">
     <div class="tw-p-6 sm:tw-p-10">
       <h1 class="tw-text-5xl tw-font-bold tw-mt-4">
-        List of requests made around your store
+        Active requests {{userStore.locationEnabled ? 'made around your store' : ''}}
       </h1>
       <p v-if="!userStore.locationEnabled" class="tw-bg-black tw-text-white tw-mt-2">You are currently viewing requests that was not made with any location data</p>
 
