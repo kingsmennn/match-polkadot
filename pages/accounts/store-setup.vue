@@ -132,33 +132,40 @@ const complete = async () => {
                 </textarea>
               </label>
 
-              <div v-if="locationEnabled" class="tw-flex tw-mt-4">
-                <button
-                  @click="handleLocation"
-                  type="button"
-                  :disabled="gettingLocation"
-                  class="tw-bg-black tw-text-white tw-px-6 tw-rounded-l-md tw-relative tw-flex tw-items-center tw-justify-center">
-                  Add
-                  <v-progress-circular
-                    v-if="gettingLocation"
-                    class="!tw-absolute"
-                    indeterminate
-                    color="white"
-                    size="30" width="3">
-                  </v-progress-circular>
-                </button>
-                <label class="tw-flex-1 tw-relative tw-block">
-                  <span class="tw-absolute tw-text-base tw-pl-4 tw-pt-1">
-                    Add stores location
-                  </span>
-                  <input
-                    :value="form.locationObtained ? `long - ${location.lng} lat - ${location.lat}` : null"
-                    type="text"
-                    placeholder="long - xxx, lat - xxx"
-                    required
-                    readonly
-                    class="tw-w-full tw-bg-gray-100 tw-p-4 tw-pt-7 tw-rounded-md tw-outline-black">
-                </label>
+              <div v-if="locationEnabled">
+                <div class="tw-flex tw-mt-4">
+                  <button
+                    @click="handleLocation"
+                    type="button"
+                    :disabled="gettingLocation"
+                    class="tw-bg-black tw-text-white tw-px-6 tw-rounded-l-md tw-relative tw-flex tw-items-center tw-justify-center">
+                    Add
+                    <v-progress-circular
+                      v-if="gettingLocation"
+                      class="!tw-absolute"
+                      indeterminate
+                      color="white"
+                      size="30" width="3">
+                    </v-progress-circular>
+                  </button>
+                  <label class="tw-flex-1 tw-relative tw-block">
+                    <span class="tw-absolute tw-text-base tw-pl-4 tw-pt-1">
+                      Add stores location
+                    </span>
+                    <input
+                      :value="form.locationObtained ? `long - ${location.lng} lat - ${location.lat}` : null"
+                      type="text"
+                      placeholder="long - xxx, lat - xxx"
+                      required
+                      readonly
+                      class="tw-w-full tw-bg-gray-100 tw-p-4 tw-pt-7 tw-rounded-md tw-outline-black">
+                  </label>
+                </div>
+                <small
+                  class="tw-bg-black tw-text-white tw-p-1 tw-mt-2 tw-text-base">
+                  <v-icon size="20">mdi-alert-circle</v-icon>
+                  You're seeing this because your location preference is enabled in <NuxtLink class="tw-underline" to="/settings">settings</NuxtLink>
+                </small>
               </div>
             </div>
 
