@@ -92,6 +92,11 @@ const complete = async () => {
             <v-icon size="20">mdi-alert-circle</v-icon>
             This (ONE-TIME-SETUP) process is to be completed within your store premise (<strong>recommended: inside your store</strong>)
           </small>
+          <small v-else class="tw-bg-black tw-text-white tw-p-1 tw-mt-2">
+            <v-icon size="20">mdi-alert-circle</v-icon>
+            (ONE-TIME-SETUP): Note that your location preference is disabled in <NuxtLink class="tw-underline" to="/settings">settings</NuxtLink>,
+            you will not be able to see requests made around your store
+          </small>
           <form @submit.prevent="complete" class="tw-mt-4 tw-text-2xl">
             <div>
               <label class="tw-relative tw-mt-4 tw-block">
