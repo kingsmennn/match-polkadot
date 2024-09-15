@@ -2,7 +2,7 @@
   <div class="tw-max-w-7xl tw-mx-auto">
     <div class="tw-p-6 sm:tw-p-10">
       <FinalizeRegistration
-        v-if="!userStore.passedSecondaryCheck && locationEnabled"
+        v-if="!userStore.passedSecondaryCheck && (locationEnabled || isSeller)"
         class="tw-mb-6"
       />
 
@@ -139,7 +139,7 @@ onBeforeMount(()=>{
 
 const handleRequestForItem = () => {
   // check if user needs to provide their location before creating a request
-  if(!locationEnabled.value) {
+  if(!locationEnabled.value || userStore.passedSecondaryCheck) {
     router.push('/requests/create')
     return
   }

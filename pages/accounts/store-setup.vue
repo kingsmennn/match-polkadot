@@ -4,7 +4,7 @@ import { useUserStore } from '@/pinia/user';
 import { toast } from 'vue-sonner';
 
 definePageMeta({
-  middleware: 'auth',
+  middleware: ['auth', 'seller'],
   requiresAuth: true,
 })
 
@@ -20,6 +20,9 @@ const {
   getDevicePosition,
   locationWarnNotice
 } = useGetLocation()
+
+// location preference
+const locationEnabled = computed(() => userStore.locationEnabled)
 
 const gettingLocation = ref(false)
 const handleLocation = ()=> {
@@ -84,6 +87,7 @@ const complete = async () => {
         <div>
           <h2 class="tw-text-5xl tw-font-bold">Store Setup</h2>
           <small
+            v-if="locationEnabled"
             class="tw-bg-black tw-text-white tw-p-1 tw-mt-2">
             <v-icon size="20">mdi-alert-circle</v-icon>
             This (ONE-TIME-SETUP) process is to be completed within your store premise (<strong>recommended: inside your store</strong>)
@@ -128,7 +132,7 @@ const complete = async () => {
                 </textarea>
               </label>
 
-              <div class="tw-flex tw-mt-4">
+              <div v-if="locationEnabled" class="tw-flex tw-mt-4">
                 <button
                   @click="handleLocation"
                   type="button"

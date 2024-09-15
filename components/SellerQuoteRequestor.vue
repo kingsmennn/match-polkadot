@@ -121,6 +121,7 @@
 import { useUserStore } from "@/pinia/user";
 import { useRequestsStore } from "@/pinia/request";
 import { toast } from "vue-sonner";
+import { storeSetupRequired } from "@/utils/messages";
 
 type Props = {
   requestId: number;
@@ -173,6 +174,10 @@ const handleFormSubmit = async () => {
   if (!images.value.length) {
     toast.warning("Please add proof image");
     return;
+  }
+  if(!userStore.passedSecondaryCheck) {
+    toast.warning(storeSetupRequired)
+    return
   }
   submiting.value = true;
   try {
