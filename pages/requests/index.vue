@@ -34,7 +34,8 @@
           :buyerId="request.buyerId"
           :locked-seller-id="request.lockedSellerId ?? null"
           :sellers-price-quote="request.sellersPriceQuote ?? null"
-          :account-type="userStore?.accountType"
+          :account-type="userStore?.accountType!"
+          :buyer-address="request.buyerAddress!"
         />
       </div>
 

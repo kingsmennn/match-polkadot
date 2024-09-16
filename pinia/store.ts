@@ -1,11 +1,10 @@
 import { defineStore } from "pinia";
 import { CreateStoreDTO, Store, STORE_STORE_KEY } from "@/types";
 import {
-  MAX_CALL_WEIGHT,
-  PROOFSIZE,
   storageDepositLimit,
   useUserStore,
 } from "./user";
+import { MAX_CALL_WEIGHT, PROOFSIZE } from "@/utils/constants";
 import { LOCATION_DECIMALS } from "@/utils/constants";
 
 import { BN, BN_ONE } from "@polkadot/util";

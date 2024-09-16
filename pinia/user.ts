@@ -16,6 +16,7 @@ import { marketAbi } from "@/blockchain/abi";
 import { connectExtension } from "@/utils/connect_web3";
 import { BN, BN_ONE } from "@polkadot/util";
 import type { WeightV2 } from "@polkadot/types/interfaces";
+import { MAX_CALL_WEIGHT, PROOFSIZE } from "@/utils/constants";
 
 import {
   web3AccountsSubscribe,
@@ -38,8 +39,6 @@ type UserStore = {
 };
 
 const env = useRuntimeConfig().public;
-export const MAX_CALL_WEIGHT = new BN(5_000_000_000_000).isub(BN_ONE);
-export const PROOFSIZE = new BN(1_000_000);
 
 export const storageDepositLimit = null;
 let apiInstance: ApiPromise | null = null;
@@ -523,17 +522,17 @@ export const useUserStore = defineStore(STORE_KEY, {
       }
     },
 
-    async polkadotApi() {
-      if (apiInstance) {
-        return apiInstance;
-      }
+      async polkadotApi() {
+        if (apiInstance) {
+          return apiInstance;
+        }
 
-      const wsProvider = new WsProvider(env.polkadotRpcUrl);
-      apiInstance = await ApiPromise.create({
-        provider: wsProvider,
-      });
-      return apiInstance;
-    },
+        const wsProvider = new WsProvider(env.polkadotRpcUrl);
+        apiInstance = await ApiPromise.create({
+          provider: wsProvider,
+        });
+        return apiInstance;
+      },
 
     async getUserLocation() {
       const env = useRuntimeConfig().public;

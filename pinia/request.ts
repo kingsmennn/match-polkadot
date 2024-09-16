@@ -8,11 +8,10 @@ import {
 } from "@/types";
 
 import {
-  MAX_CALL_WEIGHT,
-  PROOFSIZE,
   storageDepositLimit,
   useUserStore,
 } from "./user";
+import { MAX_CALL_WEIGHT, PROOFSIZE } from "@/utils/constants";
 
 import { BN, BN_ONE } from "@polkadot/util";
 import { web3FromAddress } from "@polkadot/extension-dapp";
