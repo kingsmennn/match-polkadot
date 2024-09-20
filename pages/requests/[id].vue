@@ -68,7 +68,7 @@
                     :request-id="requestDetails.requestId"
                     :store-name="offer.storeName"
                     :buyer-id="requestDetails.buyerId"
-                    :seller-id="offer.sellerId"
+                    :seller-id="Number(offer.sellerId)"
                     :images="offer.images"
                     :lifecycle="requestDetails.lifecycle"
                     :price-quote="offer.price"
@@ -214,7 +214,7 @@ const sellerExistingOffer = computed(()=>{
   if(!allOffers.value.length) return null as unknown as Offer
   let res: Offer = null as unknown as Offer
   allOffers.value.forEach((offer)=>{
-    if(offer.sellerId === userStore.accountId){
+    if(Number(offer.sellerId) === userStore.userId){
       res = offer
     }
   })

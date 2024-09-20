@@ -73,7 +73,7 @@ interface Props {
   images: string[];
   priceQuote: number | null;
   buyerId: number;
-  sellerId: string;
+  sellerId: number;
   storeName: string;
   isAccepted?: boolean;
 }
