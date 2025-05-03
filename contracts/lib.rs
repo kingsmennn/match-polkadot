@@ -7,6 +7,7 @@ mod marketplace {
     use ink::storage::Mapping;
 
     #[ink::scale_derive(Encode, Decode, TypeInfo)]
+    #[allow(clippy::cast_possible_truncation)]
     #[derive(Debug, PartialEq, Eq)]
     pub enum MarketplaceError {
         UserAlreadyExists,
@@ -223,6 +224,7 @@ mod marketplace {
         derive(Debug, Eq, ink::storage::traits::StorageLayout)
     )]
     #[ink::scale_derive(Encode, Decode, TypeInfo)]
+    #[allow(clippy::cast_possible_truncation)]
     pub enum AccountType {
         Buyer,
         Seller,
@@ -240,6 +242,7 @@ mod marketplace {
         derive(Debug, Eq, ink::storage::traits::StorageLayout)
     )]
     #[ink::scale_derive(Encode, Decode, TypeInfo)]
+    #[allow(clippy::cast_possible_truncation)]
     pub enum RequestLifecycle {
         Pending,
         AcceptedBySeller,
