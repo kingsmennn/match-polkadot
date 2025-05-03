@@ -839,7 +839,9 @@ mod marketplace {
         use ink::env::DefaultEnvironment;
 
         fn set_buyer_env() {
-            let accounts = ink::env::test::default_accounts::<ink::env::DefaultEnvironment>();
+            let accounts: ink::env::test::DefaultAccounts<DefaultEnvironment> =
+                ink::env::test::default_accounts::<ink::env::DefaultEnvironment>();
+
             ink::env::test::set_caller::<DefaultEnvironment>(accounts.alice);
             ink::env::test::set_callee::<DefaultEnvironment>(accounts.charlie);
         }

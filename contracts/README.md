@@ -59,6 +59,15 @@ To run and build the Ink! smart contract in the `Marketplace` module, follow the
      ```bash
      substrate-contracts-node --dev --tmp
      ```
+### Build the Marketplace Contract
+
+1. Compile the contract:
+
+   ```bash
+   cargo contract build
+   ```
+
+   This will generate a `.contract` file in the `target` folder, which includes the compiled WebAssembly (`.wasm`) and metadata files required to deploy the contract.
 
 ### Deploying the Contract
 
