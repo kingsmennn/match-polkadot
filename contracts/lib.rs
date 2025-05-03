@@ -265,7 +265,7 @@ mod marketplace {
         store_counter: u64,
         request_counter: u64,
         offer_counter: u64,
-        TIME_TO_LOCK: u64,
+        time_to_lock: u64,
         user_ids: Mapping<u64, AccountId>,
     }
 
@@ -282,7 +282,7 @@ mod marketplace {
                 store_counter: 0,
                 request_counter: 0,
                 offer_counter: 0,
-                TIME_TO_LOCK: 900 * 1000,
+                time_to_lock: 900 * 1000,
                 user_ids: Mapping::default(),
             }
         }
@@ -540,7 +540,7 @@ mod marketplace {
 
             // Check if the request is locked due to timeout or lifecycle status
             if self.env().block_timestamp()
-                > request.updated_at.checked_add(self.TIME_TO_LOCK).unwrap()
+                > request.updated_at.checked_add(self.time_to_lock).unwrap()
                 && request.lifecycle == RequestLifecycle::AcceptedByBuyer
             {
                 return Err(MarketplaceError::RequestLocked);
@@ -628,7 +628,7 @@ mod marketplace {
 
             // Check if the request is locked due to timeout or lifecycle status
             if self.env().block_timestamp()
-                > request.updated_at.checked_add(self.TIME_TO_LOCK).unwrap()
+                > request.updated_at.checked_add(self.time_to_lock).unwrap()
                 && request.lifecycle == RequestLifecycle::AcceptedByBuyer
             {
                 return Err(MarketplaceError::RequestLocked);
@@ -704,7 +704,7 @@ mod marketplace {
                 return Err(MarketplaceError::RequestNotAccepted);
             }
 
-            if request.updated_at.checked_add(self.TIME_TO_LOCK).unwrap()
+            if request.updated_at.checked_add(self.time_to_lock).unwrap()
                 > self.env().block_timestamp()
             {
                 return Err(MarketplaceError::RequestNotLocked);
@@ -858,7 +858,7 @@ mod marketplace {
             assert_eq!(contract.store_counter, 0);
             assert_eq!(contract.request_counter, 0);
             assert_eq!(contract.offer_counter, 0);
-            assert_eq!(contract.TIME_TO_LOCK, 900 * 1000);
+            assert_eq!(contract.time_to_lock, 900 * 1000);
         }
 
         #[test]
