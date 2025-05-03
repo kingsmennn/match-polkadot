@@ -55,7 +55,6 @@ Check out our demo video to see Match in action! The video showcases the technic
 
 Certainly! Here's an outline for "Match" based on the categories you provided:
 
-
 ### Future Roadmap
 
 **Key Learnings:**
@@ -86,32 +85,21 @@ Certainly! Here's an outline for "Match" based on the categories you provided:
    yarn install
    ```
 
-3. **Configure Environment Variables:**
 
-   Create a `.env` file in the root directory and add the following variables:
 
-   ```bash
-   LIGHTHOUSE_API_KEY = 27XXX73.51437XXXbfac947
-   MATCH_API_URL = https://finder-backend-evm.onrender.com
-   CONTRACT_ID = 5CMWSyLf2tTCKiNAPN8VHBJ1egjKbvmEj2ctVKEWyYuGFz8E
-   CHAIN_ID = 97
-   GOOGLE_MAPS_API_KEY = AIzaSyDXXXXXIPepz_29M
-   POLKADOT_RPC_URL = wss://ws.test.azero.dev
-   ```
-
-4. **Start the Development Server:**
+3. **Start the Development Server:**
 
    ```bash
    yarn start
    ```
 
-5. **Build for Production:**
+4. **Build for Production:**
 
    ```bash
    yarn build
    ```
 
-6. **Deploy the Application:**
+5. **Deploy the Application:**
 
    Deploy the built application to your preferred hosting service.
 
@@ -121,10 +109,6 @@ Certainly! Here's an outline for "Match" based on the categories you provided:
 - **Creating Offers:** Sellers can log in, create new offers to a buyers request by providing the necessary details (price, images, etc.), and list them on the platform.
 - **Accepting Offers:** Buyers can browse offers related to their requests, accept the most suitable ones, and initiate transactions.
 - **Managing Stores:** Sellers can manage their stores, view store details, and retrieve all their store IDs.
-
-### Contracts
-
-- https://github.com/kingsmennn/match-contract-polkadot
 
 ### Contributing
 

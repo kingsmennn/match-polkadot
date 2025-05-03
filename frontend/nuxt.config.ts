@@ -35,11 +35,8 @@ export default defineNuxtConfig({
       appName: "Match",
       appContactEmail:
         process.env.MATCH_CONTACT_EMAIL || "kingsmen.hackers@gmail.com",
-      matchApiUrl: process.env.MATCH_API_URL,
-      lightHouseApiKey: process.env.LIGHTHOUSE_API_KEY,
-      hederaBaseUrl: process.env.HEDERA_BASE_URL,
+      pinataJWT: process.env.PINATA_JWT,
       contractId: process.env.CONTRACT_ID,
-      chainId: process.env.CHAIN_ID,
       googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
       polkadotRpcUrl: process.env.POLKADOT_RPC_URL,
     },

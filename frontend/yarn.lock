@@ -6330,6 +6330,11 @@ pify@^3.0.0:
   resolved "https://registry.npmjs.org/pify/-/pify-3.0.0.tgz"
   integrity sha512-C3FsVNH1udSEX48gGX1xfvwTWfsYWj5U+8/uK15BGzIGrKoUpghX8hWZwa/OFnakBiiVNmBvemTJR5mcy7iPcg==
 
+pinata@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/pinata/-/pinata-2.2.1.tgz#cd918501d47de84cf65996f1ce74a4281a992abe"
+  integrity sha512-GQi5pxyvIuRVF+PY4d/pc4tQQemxyyt2mfR/HznXY3ATDs1zEgc0ENrTf7uUl6DkElteuUVudeAOPZCvq6pbbw==
+
 pinia-plugin-persistedstate@>=3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/pinia-plugin-persistedstate/-/pinia-plugin-persistedstate-3.2.1.tgz#66780602aecd6c7b152dd7e3ddc249a1f7a13fe5"
