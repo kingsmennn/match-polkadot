@@ -183,15 +183,18 @@ const userStore = useUserStore();
 // else redirect them back to dashboard
 watch(
   [
-    ()=>userStore.locationEnabled,
-    ()=>userStore.location,
-    ()=>userStore.accountId
-  ], ([locationEnabled, location, accountId]) => {
-    if(!accountId) return
-    if(locationEnabled && !location?.[0]) {
-      navigateTo('/accounts/' + userStore.accountId)
+    () => userStore.locationEnabled,
+    () => userStore.location,
+    () => userStore.accountId,
+  ],
+  ([locationEnabled, location, accountId]) => {
+    if (!accountId) return;
+    if (locationEnabled && !location?.[0]) {
+      navigateTo("/accounts/" + userStore.accountId);
     }
-}, { immediate: true })
+  },
+  { immediate: true }
+);
 
 const carousel = ref(0);
 const spatularImages = [
@@ -223,7 +226,7 @@ const resetForm = () => {
 };
 
 // IMAGE UPLOAD SECTION
-const { progress, uploadFile } = useLightHouseUpload();
+const { progress, uploadFile } = usePinataUpload();
 const { files, open, reset: resetFiles } = useFileDialog();
 const uploadingImage = ref(false);
 const readyForAnotherUpload = ref(true);
@@ -259,7 +262,9 @@ const handleNewRequest = async () => {
   }
 
   // check users location preference
-  const locationToUse = userStore.locationEnabled ? userStore.location! : [0, 0];
+  const locationToUse = userStore.locationEnabled
+    ? userStore.location!
+    : [0, 0];
 
   try {
     submiting.value = true;

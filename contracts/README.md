@@ -73,7 +73,7 @@ To run and build the Ink! smart contract in the `Marketplace` module, follow the
 
 1. Go to the PolkadotJS Apps portal:
 
-   - Open [PolkadotJS Apps](https://polkadot.js.org/apps/#/contracts).
+   - Open [UI ink](http://ui.use.ink/).https://inkv6alpha.netlify.app/
 
 2. Upload and Deploy the Contract:
    - Navigate to the "Contracts" tab and click on "Deploy Contract."

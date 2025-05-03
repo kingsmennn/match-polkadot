@@ -135,7 +135,7 @@ const props = defineProps<Props>();
 const carousel = ref(0);
 
 // IMAGE UPLOAD SECTION
-const { progress, uploadFile } = useLightHouseUpload();
+const { progress, uploadFile } = usePinataUpload();
 const { files, open, reset: resetFiles } = useFileDialog();
 const uploadingImage = ref(false);
 const readyForAnotherUpload = ref(true);
